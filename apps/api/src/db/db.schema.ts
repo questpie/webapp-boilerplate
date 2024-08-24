@@ -1,7 +1,13 @@
 import cuid2 from '@paralleldrive/cuid2'
-import { pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
-import { relations, eq, and, type InferSelectModel } from 'drizzle-orm'
+import { relations } from 'drizzle-orm'
+import { pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 
+/**
+ * We are using cuid2 for generating ids
+ * - 21 characters
+ * - sorted lexicographically
+ * - URL friendly
+ */
 const defaultCuid = cuid2.init({ length: 21 })
 
 const primaryKey = (name = 'id') =>

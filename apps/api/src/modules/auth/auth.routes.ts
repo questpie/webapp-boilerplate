@@ -3,3 +3,6 @@ import { googleRoutes } from '@questpie/api/modules/auth/oauth/google.routes'
 import Elysia from 'elysia'
 
 export const authRoutes = new Elysia({ prefix: '/auth' }).use(magicLinkRoutes).use(googleRoutes)
+
+// add other oauth providers routes here
+// create them after google routes example

@@ -27,6 +27,8 @@ export const google = new Google(
   process.env.GOOGLE_REDIRECT_URI!
 )
 
+// TODO: Add oauth providers here
+
 declare module 'lucia' {
   interface Register {
     Lucia: typeof lucia
