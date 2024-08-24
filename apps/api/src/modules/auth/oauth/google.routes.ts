@@ -1,13 +1,13 @@
-import { Elysia, t } from 'elysia'
-import { lucia, google } from '../lucia'
-import { generateState, generateCodeVerifier } from 'arctic'
 import { db } from '@questpie/api/db/db.client'
-import { userTable, oauthAccountsTable } from '@questpie/api/db/db.schema'
-import { eq, and } from 'drizzle-orm'
+import { oauthAccountsTable, userTable } from '@questpie/api/db/db.schema'
+import { generateCodeVerifier, generateState } from 'arctic'
+import { and, eq } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
+import { google, lucia } from '../lucia'
 
 export const googleRoutes = new Elysia()
   .get(
-    '/login/google',
+    '/google',
     async ({ redirect, cookie, query }) => {
       const state = generateState()
       const codeVerifier = generateCodeVerifier()
@@ -45,7 +45,7 @@ export const googleRoutes = new Elysia()
     }
   )
   .get(
-    '/auth/google/callback',
+    '/google/callback',
     async ({ query, cookie, error, redirect }) => {
       const storedState = cookie.state.value
       const storedCodeVerifier = cookie.code_verifier.value

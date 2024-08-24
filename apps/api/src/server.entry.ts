@@ -1,33 +1,11 @@
-import cors from '@elysiajs/cors'
-import swagger from '@elysiajs/swagger'
+import { api } from '@questpie/api/index'
 import { Elysia } from 'elysia'
-import { helmet } from 'elysia-helmet'
-import { rateLimit } from 'elysia-rate-limit'
-import { appRoutes } from './app.routes'
 
-const app = new Elysia()
-  .use(rateLimit())
-  .use(helmet())
-  .use(cors())
-  .use(
-    swagger({
-      documentation: {
-        info: {
-          title: 'Questpie API',
-          description: 'The Questpie API',
-          version: '1.0.0',
-        },
+/**
+ * TODO: if you want to listen to the api from next.js,
+ * you can import the server from index.ts and use it in next.js and delete this file after
+ */
+new Elysia().use(api).listen(3000)
 
-        tags: [
-          {
-            name: 'auth',
-            description: 'Endpoints for authentication',
-          },
-        ],
-      },
-    })
-  )
-  .use(appRoutes)
-  .listen(3000)
-
-console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`)
+// biome-ignore lint/suspicious/noConsoleLog: <explanation>
+console.log(`🦊 Elyria is running at ${api.server?.hostname}:${api.server?.port}`)
