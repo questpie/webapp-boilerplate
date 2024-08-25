@@ -17,23 +17,32 @@ function getUserRoom(userId: string) {
 export const chatResponseSchema = t.Object({
   type: t.Union([t.Literal('message'), t.Literal('typing'), t.Literal('activity')]),
   userId: t.String(),
-  content: t.Optional(t.String()),
+  content: t.String(),
+  timestamp: t.Number(),
+})
+
+export const chatBodySchema = t.Object({
+  type: t.Union([t.Literal('message'), t.Literal('typing')]),
+  content: t.String(),
 })
 
 export const chatRoutes = new Elysia({ prefix: '/chat/:roomId' })
   .use(protectedMiddleware)
   .use(socketPlugin())
   .ws('/', {
-    body: t.Object({
-      type: t.Union([t.Literal('message'), t.Literal('typing'), t.Literal('activity')]),
-      content: t.Optional(t.String()),
-    }),
+    body: chatBodySchema,
     response: chatResponseSchema,
 
     open(ws) {
       const client = ws.data.socket
       client.join(getChatRoom(ws.data.params.roomId))
       client.join(getUserRoom(ws.data.auth.user.id))
+
+      client.in(getChatRoom(ws.data.params.roomId)).send({
+        type: 'activity',
+        userId: ws.data.auth.user.id,
+        content: 'joined',
+      })
 
       // subscribe to room events and propagate to client
       client
@@ -56,6 +65,12 @@ export const chatRoutes = new Elysia({ prefix: '/chat/:roomId' })
       const client = ws.data.socket
       client.leave(getChatRoom(ws.data.params.roomId))
       client.leave(getUserRoom(ws.data.auth.user.id))
+
+      client.in(getChatRoom(ws.data.params.roomId)).send({
+        type: 'activity',
+        userId: ws.data.auth.user.id,
+        content: 'left',
+      })
     },
     message(ws, message) {
       const client = ws.data.socket
@@ -64,23 +79,22 @@ export const chatRoutes = new Elysia({ prefix: '/chat/:roomId' })
       switch (message.type) {
         case 'message':
           // add to db
-          client
-            .in(getChatRoom(ws.data.params.roomId))
-            .send<Static<typeof chatResponseSchema>>({ ...message, userId: ws.data.auth.user.id })
+          client.in(getChatRoom(ws.data.params.roomId)).send<Static<typeof chatResponseSchema>>({
+            ...message,
+            userId: ws.data.auth.user.id,
+            timestamp: Date.now(),
+          })
           break
         case 'typing':
           //propagate typing to room
           client
             .in(getChatRoom(ws.data.params.roomId))
             .except(getUserRoom(ws.data.auth.user.id))
-            .send<Static<typeof chatResponseSchema>>({ ...message, userId: ws.data.auth.user.id })
-          break
-        case 'activity':
-          //propagate activity to room
-          client
-            .in(getChatRoom(ws.data.params.roomId))
-            .except(getUserRoom(ws.data.auth.user.id))
-            .send<Static<typeof chatResponseSchema>>({ ...message, userId: ws.data.auth.user.id })
+            .send<Static<typeof chatResponseSchema>>({
+              ...message,
+              userId: ws.data.auth.user.id,
+              timestamp: Date.now(),
+            })
           break
       }
     },
