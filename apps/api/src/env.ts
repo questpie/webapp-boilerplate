@@ -14,10 +14,8 @@ export const env = createEnv(
   Type.Object({
     PORT: StringInt({ default: 3000 }),
 
+    // database
     DATABASE_URL: Type.String(),
-
-    JWT_SECRET: Type.String(),
-    JWT_EXPIRES_IN: Type.String(),
 
     S3_ENDPOINT: Type.String(),
     S3_PORT: StringInt(),
@@ -25,6 +23,12 @@ export const env = createEnv(
     S3_BUCKET: Type.String(),
     S3_ACCESS_KEY: Type.String(),
     S3_SECRET_KEY: Type.String(),
+
+    // redis
+    REDIS_HOST: Type.String(),
+    REDIS_PORT: StringInt({ default: 6379 }),
+    REDIS_PASSWORD: Type.Optional(Type.String()),
+    REDIS_DB: Type.Optional(StringInt({ default: 0 })),
   }),
   Bun.env
 )

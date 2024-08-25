@@ -10,7 +10,7 @@ This is a monorepo boilerplate used inside QUESTPIE.com projects.
 - [x] TsConfig setup
 - [x] Elysia server
 - [x] Drizzle ORM
-- [ ] Redis setup
+- [x] Redis setup
 - [ ] Websocket 
     - [ ] Elysia Websocket - (long running server must be deployed on a non-serverless environment)
         - [ ] Horizontal scaling through Redis (optional)  
