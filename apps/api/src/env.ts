@@ -1,5 +1,5 @@
 import { createEnv } from '@questpie/shared/env/create-env'
-import { Type, type StringOptions, type TransformOptions } from '@sinclair/typebox'
+import { Type, type StringOptions } from '@sinclair/typebox'
 
 const StringInt = (opts: StringOptions = {}) =>
   Type.Transform(Type.String(opts))
@@ -17,6 +17,7 @@ export const env = createEnv(
     // database
     DATABASE_URL: Type.String(),
 
+    // if no s3 needed, remove this
     S3_ENDPOINT: Type.String(),
     S3_PORT: StringInt(),
     S3_SSL: StringBoolean({ default: true }),
@@ -24,8 +25,16 @@ export const env = createEnv(
     S3_ACCESS_KEY: Type.String(),
     S3_SECRET_KEY: Type.String(),
 
-    // redis
+    //if no redis needed, remove this
     REDIS_URL: Type.String(),
+
+    // Pusher/Soketi -> if no ws needed, remove this
+    PUSHER_APP_ID: Type.String(),
+    PUSHER_KEY: Type.String(),
+    PUSHER_SECRET: Type.String(),
+    PUSHER_HOST: Type.String(),
+    PUSHER_PORT: StringInt(),
+    PUSHER_USE_TLS: StringBoolean({ default: false }),
   }),
   Bun.env
 )
