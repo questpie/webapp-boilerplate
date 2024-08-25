@@ -1,17 +1,13 @@
 import { env } from '@questpie/api/env'
+import Elysia from 'elysia'
 import { Redis, type RedisOptions } from 'ioredis'
 
 /**
  * Extend this config with your own redis clients if needed
  */
 const redisConfig = {
-  default: {
-    host: env.REDIS_HOST,
-    port: env.REDIS_PORT,
-    password: env.REDIS_PASSWORD,
-    db: env.REDIS_DB,
-  },
-} as const satisfies Record<string, RedisOptions>
+  default: env.REDIS_URL,
+} as const satisfies Record<string, RedisOptions | string>
 
 type RedisClientName = keyof typeof redisConfig
 
@@ -36,6 +32,8 @@ class RedisManager {
   }
 }
 
-const redisManager = new RedisManager()
-
-export { redisManager }
+export function redisPlugin() {
+  return new Elysia({
+    name: 'redis-manager',
+  }).decorate('redisManager', new RedisManager())
+}

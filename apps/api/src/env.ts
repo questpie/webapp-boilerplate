@@ -25,10 +25,7 @@ export const env = createEnv(
     S3_SECRET_KEY: Type.String(),
 
     // redis
-    REDIS_HOST: Type.String(),
-    REDIS_PORT: StringInt({ default: 6379 }),
-    REDIS_PASSWORD: Type.Optional(Type.String()),
-    REDIS_DB: Type.Optional(StringInt({ default: 0 })),
+    REDIS_URL: Type.String(),
   }),
   Bun.env
 )

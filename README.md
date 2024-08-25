@@ -11,12 +11,11 @@ This is a monorepo boilerplate used inside QUESTPIE.com projects.
 - [x] Elysia server
 - [x] Drizzle ORM
 - [x] Redis setup
-- [ ] Websocket 
-    - [ ] Elysia Websocket - (long running server must be deployed on a non-serverless environment)
-        - [ ] Horizontal scaling through Redis (optional)  
-    - [ ] Pusher/Soketi - (serverless environment -> pusher branch)
-    - [ ] Example
-    - [ ] Setup
+- [x] Websocket 
+    - [x] Elysia Websocket - (long running server must be deployed on a non-serverless environment)
+        - [x] Horizontal scaling through Redis (optional)
+    - [x] Example
+    - [x] Setup
 - [x] WebApp - Next.js
     - [x] App Router
     - [x] ShadcnUI - Dark mode - Tailwind

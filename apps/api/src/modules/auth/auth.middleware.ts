@@ -1,0 +1,38 @@
+import { lucia } from '@questpie/api/modules/auth/lucia'
+import Elysia from 'elysia'
+
+/**
+ * Extracts the session from the cookie and validates it
+ */
+export const authMiddleware = new Elysia({ name: 'auth.middleware' })
+  .derive({ as: 'scoped' }, async ({ cookie }) => {
+    const sessionId = cookie[lucia.sessionCookieName]?.value
+    return {
+      auth: sessionId ? await lucia.validateSession(sessionId) : null,
+    }
+  })
+  .macro(({ onBeforeHandle }) => ({
+    isSignedIn(value: boolean) {
+      if (!value) return
+      onBeforeHandle(({ auth, error }) => {
+        if (!auth || !auth.session || !auth.user) {
+          error(401, 'Unauthorized')
+        }
+      })
+    },
+  }))
+
+/**
+ * Ensures the user is signed in
+ */
+export const protectedMiddleware = new Elysia()
+  .use(authMiddleware)
+  .guard({ isSignedIn: true })
+  .derive({ as: 'scoped' }, ({ auth }) => {
+    return {
+      auth: {
+        user: auth!.user!,
+        session: auth!.session!,
+      },
+    }
+  })
