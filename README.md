@@ -26,13 +26,15 @@ This is a monorepo boilerplate used inside QUESTPIE.com projects.
   - [x] OAuth example (google)
 - [x] Resend/Nodemailer Setup -> unified provider agnostic email sending interface  
   - [x] Preview URL on dev
+- [ ] Trigger.dev for jobs
 - [ ] Payment integration 
   - [ ] Stripe (default)
-  - [ ] LemonSqueezy (optional)
   - [ ] Routes
-  - [ ] Webhooks
+  - [ ] Webhooks with Trigger.dev
+  - [ ] fraud prevention
   - [ ] Checkout
   - [ ] Customer sync
 - [ ] Docs/Landing - Next.js with cms integration
   - [ ] PayloadCMS ?? or other CMS?
 - [ ] Trigger.dev for jobs
+  - [ ] stripe webhooks
