@@ -61,6 +61,7 @@ export const chatRoutes = new Elysia({ prefix: '/chat/:roomId' })
           }
         })
     },
+
     close(ws) {
       const client = ws.data.socket
       client.leave(getChatRoom(ws.data.params.roomId))
@@ -72,6 +73,7 @@ export const chatRoutes = new Elysia({ prefix: '/chat/:roomId' })
         content: 'left',
       })
     },
+
     message(ws, message) {
       const client = ws.data.socket
 

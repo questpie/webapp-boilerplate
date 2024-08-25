@@ -25,7 +25,9 @@ export const authMiddleware = new Elysia({ name: 'auth.middleware' })
 /**
  * Ensures the user is signed in
  */
-export const protectedMiddleware = new Elysia()
+export const protectedMiddleware = new Elysia({
+  name: 'protected.middleware',
+})
   .use(authMiddleware)
   .guard({ isSignedIn: true })
   .derive({ as: 'scoped' }, ({ auth }) => {

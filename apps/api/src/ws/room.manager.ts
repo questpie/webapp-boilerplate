@@ -37,6 +37,30 @@ class RedisAdapter implements Adapter {
   }
 }
 
+class LocalAdapter implements Adapter {
+  private channels: Map<string, Set<(message: string) => void>> = new Map()
+
+  async publish(channel: string, message: string): Promise<void> {
+    const subscribers = this.channels.get(channel)
+    if (subscribers) {
+      for (const callback of subscribers) {
+        callback(message)
+      }
+    }
+  }
+
+  async subscribe(channel: string, callback: (message: string) => void): Promise<void> {
+    if (!this.channels.has(channel)) {
+      this.channels.set(channel, new Set())
+    }
+    this.channels.get(channel)!.add(callback)
+  }
+
+  async unsubscribe(channel: string): Promise<void> {
+    this.channels.delete(channel)
+  }
+}
+
 class SocketClient<TData extends Record<string, any> = Record<string, any>> {
   id: string
   data: TData
@@ -209,14 +233,21 @@ class RoomManager {
   }
 }
 
-function roomManagerPlugin() {
+/**
+ * We'll use redis for production and local for development and testing
+ */
+function roomManagerPlugin(adapterType: 'redis' | 'local') {
   return new Elysia({
     name: 'room-manager',
   })
     .use(redisPlugin())
     .decorate((ctx) => ({
       ...ctx,
-      roomManager: new RoomManager(new RedisAdapter(ctx.redisManager.getClient())),
+      roomManager: new RoomManager(
+        adapterType === 'redis'
+          ? new RedisAdapter(ctx.redisManager.getClient())
+          : new LocalAdapter()
+      ),
     }))
 }
 
@@ -225,7 +256,7 @@ function socketPlugin(name?: string) {
     name: name,
   })
     .use(protectedMiddleware)
-    .use(roomManagerPlugin())
+    .use(roomManagerPlugin('redis'))
     .derive({ as: 'scoped' }, async (ctx) => ({
       socket: ctx.roomManager.createClient({
         userId: ctx.auth!.user.id,
@@ -233,4 +264,4 @@ function socketPlugin(name?: string) {
     }))
 }
 
-export { Room, RoomManager, SocketClient, socketPlugin, type Adapter }
+export { Room, RoomManager, SocketClient, socketPlugin, roomManagerPlugin, type Adapter }
