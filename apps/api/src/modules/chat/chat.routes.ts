@@ -83,9 +83,5 @@ export const chatRoutes = new Elysia({ prefix: '/chat/:roomId' })
             .send<Static<typeof chatResponseSchema>>({ ...message, userId: ws.data.auth.user.id })
           break
       }
-
-      return {
-        ok: true,
-      }
     },
   })

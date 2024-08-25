@@ -10,9 +10,6 @@ interface Adapter {
   unsubscribe(channel: string): Promise<void>
 }
 
-/**
- * If you don't want to use Redis, you can use the LocalAdapter.
- */
 class RedisAdapter implements Adapter {
   private publisher: Redis
   private subscriber: Redis
@@ -67,23 +64,22 @@ class SocketClient<TData extends Record<string, any> = Record<string, any>> {
 }
 
 class Room {
-  id: string
   clients: Set<SocketClient> = new Set()
-  private adapter: Adapter
 
-  constructor(id: string, adapter: Adapter) {
-    this.id = id
-    this.adapter = adapter
-  }
+  constructor(
+    readonly id: string,
+    private readonly adapter: Adapter,
+    private readonly manager: RoomManager
+  ) {}
 
   except(...roomIds: string[]): Room {
     const exceptClients = new Set<SocketClient>()
     for (const client of this.clients) {
-      if (!roomIds.some((roomId) => client.in(roomId).clients.has(client))) {
+      if (!roomIds.some((roomId) => !!this.manager.getRoom(roomId)?.clients.has(client))) {
         exceptClients.add(client)
       }
     }
-    const exceptRoom = new Room(this.id, this.adapter)
+    const exceptRoom = new Room(this.id, this.adapter, this.manager)
     exceptRoom.clients = exceptClients
     return exceptRoom
   }
@@ -127,7 +123,7 @@ class RoomManager {
 
   private handleClientJoined(data: { client: { id: string; data: any }; roomId: string }): void {
     const { client, roomId } = data
-    const room = this.getRoom(roomId)
+    const room = this.getOrCreateRoom(roomId)
     const dummyClient = new SocketClient(client.id, client.data, this)
     room.clients.add(dummyClient)
   }
@@ -149,7 +145,7 @@ class RoomManager {
   addClientToRoom(client: SocketClient, roomId: string): Room {
     let room = this.rooms.get(roomId)
     if (!room) {
-      room = new Room(roomId, this.adapter)
+      room = new Room(roomId, this.adapter, this)
       this.rooms.set(roomId, room)
     }
     room.clients.add(client)
@@ -185,16 +181,22 @@ class RoomManager {
   createClient<TData extends Record<string, any>>(data: TData): SocketClient<TData> {
     return new SocketClient(null, data, this)
   }
+  getRoom(roomId: string) {
+    return this.rooms.get(roomId)
+  }
 
-  getRoom(roomId: string): Room {
-    if (!this.rooms.has(roomId)) {
-      this.rooms.set(roomId, new Room(roomId, this.adapter))
+  getOrCreateRoom(roomId: string): Room {
+    if (!this.getRoom(roomId)) {
+      const room = new Room(roomId, this.adapter, this)
+      this.rooms.set(roomId, room)
+      return room
     }
-    return this.rooms.get(roomId)!
+
+    return this.getRoom(roomId)!
   }
 
   getClientsInRooms(roomIds: string[]): Room {
-    const combinedRoom = new Room('combined', this.adapter)
+    const combinedRoom = new Room('combined', this.adapter, this)
     for (const roomId of roomIds) {
       const room = this.rooms.get(roomId)
       if (room) {
