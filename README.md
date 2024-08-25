@@ -24,7 +24,8 @@ This is a monorepo boilerplate used inside QUESTPIE.com projects.
 - [x] Lucia Auth Setup
   - [x] Magic Link
   - [x] OAuth example (google)
-- [ ] Resend/Nodemailer Setup -> unified provider agnostic email sending interface
+- [x] Resend/Nodemailer Setup -> unified provider agnostic email sending interface  
+  - [x] Preview URL on dev
 - [ ] Payment integration 
   - [ ] Stripe (default)
   - [ ] LemonSqueezy (optional)

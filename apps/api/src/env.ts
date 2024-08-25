@@ -13,6 +13,12 @@ const StringBoolean = (opts: StringOptions = {}) =>
 export const env = createEnv(
   Type.Object({
     PORT: StringInt({ default: 3000 }),
+    NODE_ENV: Type.Union(
+      [Type.Literal('production'), Type.Literal('development'), Type.Literal('test')],
+      {
+        default: 'development',
+      }
+    ),
 
     // database
     DATABASE_URL: Type.String(),
@@ -35,6 +41,13 @@ export const env = createEnv(
     PUSHER_HOST: Type.String(),
     PUSHER_PORT: StringInt(),
     PUSHER_USE_TLS: StringBoolean({ default: false }),
+
+    // mail
+    RESEND_API_KEY:
+      Bun.env.NODE_ENV === 'production' ? Type.String() : Type.Optional(Type.String()),
+    MAIL_FROM: Type.String({
+      default: 'noreply@yourdomain.com',
+    }),
   }),
   Bun.env
 )
