@@ -1,6 +1,6 @@
-import type { MailClient } from '@questpie/api/mail/adapter/_base.mail'
-import { ResendMailClient } from '@questpie/api/mail/adapter/resend.mail'
-import { SMTPMailClient } from '@questpie/api/mail/adapter/smtp.mail'
+import type { MailClient } from '@questpie/mail/base-mail'
+import { ResendMailClient } from '@questpie/mail/resend.mail'
+import { SMTPMailClient } from '@questpie/mail/smtp.mail'
 import { env } from 'bun'
 import { createTestAccount, getTestMessageUrl } from 'nodemailer'
 

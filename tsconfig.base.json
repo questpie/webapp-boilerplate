@@ -28,7 +28,8 @@
     "paths": {
       "@questpie/api/*": ["./apps/api/src/*"],
       "@questpie/shared/*": ["./packages/shared/src/*"],
-      "@questpie/translations/*": ["./packages/translations/src/*"]
+      "@questpie/translations/*": ["./packages/translations/src/*"],
+      "@questpie/mail/*": ["./packages/mail/src/*"]
     }
   }
 }
