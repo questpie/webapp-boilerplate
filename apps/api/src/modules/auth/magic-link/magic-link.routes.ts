@@ -1,5 +1,7 @@
 import { db } from '@questpie/api/db/db.client'
 import { emailVerificationTable, userTable } from '@questpie/api/db/db.schema'
+import { env } from '@questpie/api/env'
+import { getMailClient } from '@questpie/api/mail/mail.client'
 import { lucia } from '@questpie/api/modules/auth/lucia'
 import { eq } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
@@ -48,20 +50,29 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
         })
         .execute()
 
-      // TODO:
-      // Send email with magic link
-      // You'll need to implement your own email sending logic here
-      // The link should be something like: `https://example.com/verify?token=${token}?redirectTo=${redirectTo}`
+      let link = `${env.SERVER_URL}/auth/magic-link/verify?token=${token}`
+      if (body.redirectTo) {
+        link += `&redirectTo=${body.redirectTo}`
+      }
+
+      const mailClient = await getMailClient()
+      await mailClient.send({
+        to: email,
+        subject: 'Magic Link',
+        text: `Click the link to login: ${link}`,
+      })
+      console.log(token)
 
       return { success: true }
     },
     {
       body: t.Object({
         email: t.String(),
-        redirectTo: t.String({
-          description: 'Where should the user be redirected after login?',
-          default: '/',
-        }),
+        redirectTo: t.Optional(
+          t.String({
+            description: 'Where should the user be redirected after login?',
+          })
+        ),
       }),
     }
   )
@@ -102,16 +113,16 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
 
       // Delete the used token
       await db.delete(emailVerificationTable).where(eq(emailVerificationTable.id, token))
-
-      return redirect(query.redirectTo, 302)
+      return query.redirectTo ? redirect(query.redirectTo, 301) : { success: true }
     },
     {
       query: t.Object({
         token: t.String(),
-        redirectTo: t.String({
-          default: '/',
-          description: 'Where should the user be redirected after login?',
-        }),
+        redirectTo: t.Optional(
+          t.String({
+            description: 'Where should the user be redirected after login?',
+          })
+        ),
       }),
     }
   )

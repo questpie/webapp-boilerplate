@@ -16,7 +16,7 @@ export class SMTPMailClient implements MailClient {
     this.afterSendCallback = afterSendCallback
   }
 
-  async sendMail(options: MailOptions): Promise<void> {
+  async send(options: MailOptions): Promise<void> {
     let html: string | undefined = options.html
     let text: string | undefined = options.text
 

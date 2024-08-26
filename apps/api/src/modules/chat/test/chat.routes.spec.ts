@@ -17,15 +17,12 @@ const createAppForUser = (userId: string) => {
   return new Elysia().use(mockProtectedMiddleware).use(chatRoutes)
 }
 
-const app1 = createAppForUser('user1')
-const app2 = createAppForUser('user2')
-
-const api1 = treaty(app1)
-const api2 = treaty(app2)
+const app = createAppForUser('user1')
+const api = treaty(app)
 
 describe('Chat Routes', () => {
   it('should send messages', async () => {
-    const response = await api1.chat({ roomId: 'room1' }).message.post({
+    const response = await api.chat({ roomId: 'room1' }).message.post({
       type: 'message',
       content: 'Hello, world!',
     })
@@ -34,7 +31,7 @@ describe('Chat Routes', () => {
   })
 
   it('should send typing notifications', async () => {
-    const response = await api1.chat({ roomId: 'room1' }).message.post({
+    const response = await api.chat({ roomId: 'room1' }).message.post({
       type: 'typing',
       content: '',
     })
@@ -43,7 +40,7 @@ describe('Chat Routes', () => {
   })
 
   it('should reject invalid message types', async () => {
-    const response = await api1.chat({ roomId: 'room1' }).message.post({
+    const response = await api.chat({ roomId: 'room1' }).message.post({
       type: 'invalid' as any,
       content: 'This should fail',
     })

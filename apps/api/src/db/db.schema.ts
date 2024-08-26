@@ -96,5 +96,12 @@ export const oauthAccountsTable = pgTable('oauth_accounts', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
 
+export const oauthAccountsRelations = relations(oauthAccountsTable, ({ one }) => ({
+  user: one(userTable, {
+    fields: [oauthAccountsTable.userId],
+    references: [userTable.id],
+  }),
+}))
+
 export type SelectOAuthAccount = typeof oauthAccountsTable.$inferSelect
 export type InsertOAuthAccount = typeof oauthAccountsTable.$inferInsert

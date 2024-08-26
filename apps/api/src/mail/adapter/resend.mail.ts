@@ -11,7 +11,7 @@ export class ResendMailClient implements MailClient {
     this.resend = new Resend(apiKey)
   }
 
-  async sendMail(options: MailOptions): Promise<void> {
+  async send(options: MailOptions): Promise<void> {
     await this.resend.emails.send({
       from: options.from ?? env.MAIL_FROM,
       subject: options.subject,

@@ -4,19 +4,20 @@ import Elysia from 'elysia'
 /**
  * Extracts the session from the cookie and validates it
  */
-export const authMiddleware = new Elysia({ name: 'auth.middleware' })
-  .derive({ as: 'scoped' }, async ({ cookie }) => {
+export const authMiddleware = new Elysia()
+  .resolve(async ({ cookie }) => {
     const sessionId = cookie[lucia.sessionCookieName]?.value
     return {
       auth: sessionId ? await lucia.validateSession(sessionId) : null,
     }
   })
+  .as('plugin')
   .macro(({ onBeforeHandle }) => ({
     isSignedIn(value: boolean) {
       if (!value) return
       onBeforeHandle(({ auth, error }) => {
         if (!auth || !auth.session || !auth.user) {
-          error(401, 'Unauthorized')
+          return error(401, 'Unauthorized')
         }
       })
     },
@@ -30,7 +31,7 @@ export const protectedMiddleware = new Elysia({
 })
   .use(authMiddleware)
   .guard({ isSignedIn: true })
-  .derive({ as: 'scoped' }, ({ auth }) => {
+  .resolve(({ auth }) => {
     return {
       auth: {
         user: auth!.user!,
@@ -38,3 +39,4 @@ export const protectedMiddleware = new Elysia({
       },
     }
   })
+  .as('plugin')

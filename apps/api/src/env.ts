@@ -23,6 +23,9 @@ export const env = createEnv(
     // database
     DATABASE_URL: Type.String(),
 
+    // server
+    SERVER_URL: Type.String(),
+
     // if no s3 needed, remove this
     S3_ENDPOINT: Type.String(),
     S3_PORT: StringInt(),

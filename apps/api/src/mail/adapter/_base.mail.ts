@@ -2,7 +2,7 @@ import type { ReactElement, ReactNode } from 'react'
 
 // Mail adapter interface
 export interface MailClient {
-  sendMail(options: MailOptions): Promise<void>
+  send(options: MailOptions): Promise<void>
 }
 
 // Complex mail options interface
