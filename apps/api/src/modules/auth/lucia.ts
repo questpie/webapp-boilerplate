@@ -1,8 +1,9 @@
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle'
 import { db } from '@questpie/api/db/db.client'
 import { sessionTable, userTable } from '@questpie/api/db/db.schema'
-import { Lucia } from 'lucia'
+import type { DeviceInfo } from '@questpie/api/modules/auth/utils/device-info'
 import { Google } from 'arctic'
+import { Lucia } from 'lucia'
 
 const adapter = new DrizzlePostgreSQLAdapter(db, sessionTable, userTable)
 
@@ -17,6 +18,12 @@ export const lucia = new Lucia(adapter, {
     return {
       email: attributes.email,
       name: attributes.name,
+    }
+  },
+  getSessionAttributes: (attributes) => {
+    return {
+      deviceFingerprint: attributes.deviceFingerprint,
+      deviceInfo: attributes.deviceInfo,
     }
   },
 })
@@ -35,6 +42,10 @@ declare module 'lucia' {
     DatabaseUserAttributes: {
       email: string
       name: string
+    }
+    DatabaseSessionAttributes: {
+      deviceFingerprint: string
+      deviceInfo: DeviceInfo
     }
   }
 }

@@ -3,6 +3,7 @@ import { emailVerificationTable, userTable } from '@questpie/api/db/db.schema'
 import { env } from '@questpie/api/env'
 import { getMailClient } from '@questpie/api/mail/mail.client'
 import { lucia } from '@questpie/api/modules/auth/lucia'
+import { getDeviceInfo } from '@questpie/api/modules/auth/utils/device-info'
 import { eq } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
 import { createDate, isWithinExpirationDate, TimeSpan } from 'oslo'
@@ -61,7 +62,6 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
         subject: 'Magic Link',
         text: `Click the link to login: ${link}`,
       })
-      console.log(token)
 
       return { success: true }
     },
@@ -78,7 +78,7 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
   )
   .get(
     '/verify',
-    async ({ query, cookie, error, redirect }) => {
+    async ({ query, cookie, error, redirect, request }) => {
       const { token } = query
 
       const storedToken = await db
@@ -104,7 +104,7 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
       }
 
       // Create session
-      const session = await lucia.createSession(user.id, {})
+      const session = await lucia.createSession(user.id, getDeviceInfo(request))
       const sessionCookie = lucia.createSessionCookie(session.id)
       cookie[sessionCookie.name].set({
         value: sessionCookie.value,

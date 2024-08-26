@@ -1,6 +1,7 @@
 import cuid2 from '@paralleldrive/cuid2'
+import type { DeviceInfo } from '@questpie/api/modules/auth/utils/device-info'
 import { relations } from 'drizzle-orm'
-import { pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 
 /**
  * We are using cuid2 for generating ids
@@ -43,6 +44,8 @@ export const sessionTable = pgTable('session', {
     withTimezone: true,
     mode: 'date',
   }).notNull(),
+  deviceFingerprint: text('device_fingerprint').notNull(),
+  deviceInfo: jsonb('device_info').$type<DeviceInfo>().notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()

@@ -1,5 +1,6 @@
 import { db } from '@questpie/api/db/db.client'
 import { oauthAccountsTable, userTable } from '@questpie/api/db/db.schema'
+import { getDeviceInfo } from '@questpie/api/modules/auth/utils/device-info'
 import { generateCodeVerifier, generateState } from 'arctic'
 import { and, eq } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
@@ -46,7 +47,7 @@ export const googleRoutes = new Elysia()
   )
   .get(
     '/google/callback',
-    async ({ query, cookie, error, redirect }) => {
+    async ({ query, cookie, error, redirect, request }) => {
       const storedState = cookie.state.value
       const storedCodeVerifier = cookie.code_verifier.value
 
@@ -67,9 +68,7 @@ export const googleRoutes = new Elysia()
           id: string
         }
 
-        // Start a transaction
         await db.transaction(async (trx) => {
-          // Try to find an existing OAuth account
           const existingOAuthAccount = await trx
             .select()
             .from(oauthAccountsTable)
@@ -84,10 +83,8 @@ export const googleRoutes = new Elysia()
           let userId: string
 
           if (existingOAuthAccount.length > 0) {
-            // OAuth account exists, use the associated user
             userId = existingOAuthAccount[0].userId
           } else {
-            // OAuth account doesn't exist, create or find user by email
             const [user] = await trx
               .insert(userTable)
               .values({
@@ -102,7 +99,6 @@ export const googleRoutes = new Elysia()
 
             userId = user.id
 
-            // Create new OAuth account
             await trx.insert(oauthAccountsTable).values({
               userId: userId,
               provider: 'google',
@@ -110,8 +106,7 @@ export const googleRoutes = new Elysia()
             })
           }
 
-          // Create session
-          const session = await lucia.createSession(userId, {})
+          const session = await lucia.createSession(userId, getDeviceInfo(request))
           const sessionCookie = lucia.createSessionCookie(session.id)
 
           cookie[sessionCookie.name].set({
