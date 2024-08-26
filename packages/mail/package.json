@@ -1,11 +1,13 @@
 {
   "name": "@questpie/mail",
   "module": "src/index.ts",
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/react": "^18.3.1",
+    "@types/react": "^18",
     "@types/nodemailer": "^6.4.15"
   },
   "peerDependencies": {
