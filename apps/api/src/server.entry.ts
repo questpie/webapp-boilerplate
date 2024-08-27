@@ -1,4 +1,4 @@
-import { api } from '@questpie/api/index'
+import { api } from '@quesspie/api/index'
 import { Elysia } from 'elysia'
 import logixlysia from 'logixlysia'
 
@@ -9,4 +9,4 @@ import logixlysia from 'logixlysia'
 const app = new Elysia().use(api).listen(3000)
 
 // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-console.log(`🦊 Elyria is running at ${app.server?.hostname}:${app.server?.port}`)
+console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`)

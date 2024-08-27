@@ -26,10 +26,12 @@
 
     // Here you should add paths to all packages
     "paths": {
-      "@questpie/api/*": ["./apps/api/src/*"],
+      "@quesspie/api/*": ["./apps/api/src/*"],
       "@questpie/shared/*": ["./packages/shared/src/*"],
       "@questpie/translations/*": ["./packages/translations/src/*"],
-      "@questpie/mail/*": ["./packages/mail/src/*"]
+      "@questpie/mail/*": ["./packages/mail/src/*"],
+      "@questpie/jobs/*": ["./packages/jobs/src/*"],
+      "@questpie/redis/*": ["./packages/redis/src/*"]
     }
   }
 }

@@ -1,6 +1,6 @@
 import { Redis, type RedisOptions } from 'ioredis'
 
-type RedisConfig = {
+export type RedisConfig = {
   default: RedisOptions | string
   [key: string]: RedisOptions | string
 }
@@ -10,6 +10,17 @@ export class RedisManager<const TRedisConfig extends RedisConfig> {
   private defaultClient: keyof TRedisConfig = 'default'
 
   constructor(private redisConfig: TRedisConfig) {}
+
+  static parseRedisUrl(url: string): RedisOptions {
+    const parsedUrl = new URL(url)
+    const db = Number(parsedUrl.pathname.split('/')[1]) ?? undefined
+    return {
+      host: parsedUrl.hostname,
+      port: Number(parsedUrl.port),
+      password: parsedUrl.password,
+      db: Number.isNaN(db) ? undefined : db,
+    }
+  }
 
   get(name?: keyof TRedisConfig): Redis {
     const clientName = name ?? this.defaultClient
