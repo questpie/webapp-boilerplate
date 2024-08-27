@@ -1,5 +1,5 @@
 import { db } from '@questpie/api/db/db.client'
-import { emailVerificationTable, userTable } from '@questpie/api/db/db.schema'
+import { userTable, emailVerificationTable } from '@questpie/api/db/db.schema'
 import { env } from '@questpie/api/env'
 import { getMailClient } from '@questpie/api/mail/mail.client'
 import { lucia } from '@questpie/api/modules/auth/lucia'

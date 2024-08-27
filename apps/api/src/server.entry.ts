@@ -1,4 +1,4 @@
-import { api } from '@quesspie/api/index'
+import { api } from '@questpie/api/index'
 import { Elysia } from 'elysia'
 import logixlysia from 'logixlysia'
 

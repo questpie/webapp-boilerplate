@@ -9,7 +9,7 @@ export const userRoutes = new Elysia({ prefix: '/user', tags: ['User'] })
   })
   .post(
     '/send-test-mail',
-    async ({ auth, body }) => {
+    async ({ body }) => {
       sendBulkMailJob.invoke({
         to: body.emails,
         subject: 'Test',

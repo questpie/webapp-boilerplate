@@ -1,10 +1,10 @@
-import { db } from '@questpie/api/db/db.client'
-import { oauthAccountsTable, userTable } from '@questpie/api/db/db.schema'
-import { getDeviceInfo } from '@questpie/api/modules/auth/utils/device-info'
 import { generateCodeVerifier, generateState } from 'arctic'
 import { and, eq } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
 import { google, lucia } from '../lucia'
+import { db } from '@questpie/api/db/db.client'
+import { oauthAccountsTable, userTable } from '@questpie/api/db/db.schema'
+import { getDeviceInfo } from '@questpie/api/modules/auth/utils/device-info'
 
 export const googleRoutes = new Elysia()
   .get(

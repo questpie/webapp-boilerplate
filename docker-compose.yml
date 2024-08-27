@@ -20,7 +20,6 @@ services:
     volumes:
       - redis-data:/data
 
-
   minio:
     image: "minio/minio:latest"
     ports:

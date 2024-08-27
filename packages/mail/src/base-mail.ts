@@ -1,8 +1,13 @@
-import type { ReactElement, ReactNode } from 'react'
+import type { ReactElement } from 'react'
 
+export type DefaultMailOptions = {
+  from: string
+}
 // Mail adapter interface
-export interface MailClient {
-  send(options: MailOptions): Promise<void>
+export abstract class MailClient {
+  constructor(protected readonly options: DefaultMailOptions) {}
+
+  abstract send(options: MailOptions): Promise<void>
 }
 
 // Complex mail options interface

@@ -1,4 +1,4 @@
-import { env } from '@quesspie/api/env'
+import { env } from '@questpie/api/env'
 import { RedisManager } from '@questpie/redis/redis-manager'
 
 /**

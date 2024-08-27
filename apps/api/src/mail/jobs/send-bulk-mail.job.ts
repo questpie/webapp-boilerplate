@@ -1,5 +1,5 @@
-import { jobFactory } from '@quesspie/api/jobs/job-factory'
-import { getMailClient } from '@quesspie/api/mail/mail.client'
+import { jobFactory } from '@questpie/api/jobs/job-factory'
+import { getMailClient } from '@questpie/api/mail/mail.client'
 import { waitFor } from '@questpie/shared/utils/async'
 import { Type } from '@sinclair/typebox'
 

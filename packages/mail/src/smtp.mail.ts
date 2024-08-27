@@ -1,18 +1,22 @@
-import { env } from '@questpie/api/env'
-import type { MailClient, MailOptions } from '@questpie/api/mail/adapter/_base.mail'
+import { MailClient, type DefaultMailOptions, type MailOptions } from '@questpie/mail/base-mail'
 import { render } from '@react-email/render'
 import nodemailer from 'nodemailer'
 import type SMTPTransport from 'nodemailer/lib/smtp-transport'
 
-export class SMTPMailClient implements MailClient {
+export class SMTPMailClient extends MailClient {
   private transporter: nodemailer.Transporter
   private afterSendCallback?: (info: nodemailer.SentMessageInfo) => Promise<void>
 
-  constructor(
-    options: SMTPTransport | SMTPTransport.Options,
+  constructor({
+    transport,
+    afterSendCallback,
+    ...defaultOpts
+  }: DefaultMailOptions & {
+    transport: SMTPTransport | SMTPTransport.Options
     afterSendCallback?: (info: nodemailer.SentMessageInfo) => Promise<void>
-  ) {
-    this.transporter = nodemailer.createTransport(options)
+  }) {
+    super(defaultOpts)
+    this.transporter = nodemailer.createTransport(transport)
     this.afterSendCallback = afterSendCallback
   }
 
@@ -30,7 +34,7 @@ export class SMTPMailClient implements MailClient {
     }
 
     const info = await this.transporter.sendMail({
-      from: options.from || env.MAIL_FROM,
+      from: options.from,
       to: options.to,
       cc: options.cc,
       bcc: options.bcc,
