@@ -8,24 +8,26 @@ import {
   type Job,
   type JobsOptions,
   type QueueOptions,
+  type WorkerListener,
   type WorkerOptions,
 } from 'bullmq'
 
 export type BaseJobOptions<T extends TSchema> = {
   name: string
   schema?: T
-  run: (job: Job<Static<T>>) => Promise<any>
-  onCompleted?: (job: Job<Static<T>>) => Promise<any>
-  onFailed?: (job?: Job<Static<T>>, err?: Error) => Promise<any>
-  onProgress?: (job: Job<Static<T>>) => Promise<any>
-  onActive?: (job: Job<Static<T>>) => Promise<any>
-  onStalled?: (jobId: string) => Promise<any>
+  handler: (job: Job<Static<T>>) => Promise<any>
   workerOptions?: Omit<WorkerOptions, 'connection' | 'prefix'>
   queueOptions?: Omit<QueueOptions, 'connection' | 'prefix'>
+
+  events?: {
+    [key in keyof WorkerListener<Static<T>> as `on${Capitalize<key>}`]: WorkerListener<
+      Static<T>
+    >[key]
+  }
 }
 
 type JobFactoryOptions = {
-  debug?: boolean
+  verbose?: boolean
 }
 
 export class JobFactory {
@@ -34,10 +36,10 @@ export class JobFactory {
     private readonly options: JobFactoryOptions = {}
   ) {}
 
-  private debug(message: string) {
-    if (this.options.debug) {
+  private info(job: Job, message: string) {
+    if (this.options.verbose) {
       // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-      console.log(message)
+      console.log(`[${job.name}:${job.id}]: ${message}`)
     }
   }
 
@@ -50,10 +52,10 @@ export class JobFactory {
       worker = new Worker(
         options.name,
         async (job) => {
-          this.debug(`[${job.name}]: Processing job ${job.id}`)
+          this.info(job, 'Processing')
 
           if (options.schema) {
-            this.debug(`[${job.name}]: Validating job ${job.id}`)
+            this.info(job, 'Validating')
             try {
               job.data = Value.Check(options.schema, job.data)
                 ? job.data
@@ -65,17 +67,14 @@ export class JobFactory {
           }
 
           try {
-            this.debug(`Running job ${job.id}`)
-            await options.run(job)
+            this.info(job, 'Running')
+            await options.handler(job)
           } catch (err) {
-            this.debug(
-              `[${job.name}]: Job ${job.id} failed ${'message' in (err as any) ? (err as any).message : ''}`
-            )
-
+            this.info(job, 'Errored while running')
             throw err
           }
 
-          this.debug(`[${job.name}]: Job ${job.id} completed`)
+          this.info(job, 'Completed')
         },
         {
           ...options.workerOptions,
@@ -84,11 +83,10 @@ export class JobFactory {
         }
       )
 
-      if (options.onProgress) worker.on('progress', options.onProgress)
-      if (options.onFailed) worker.on('failed', options.onFailed)
-      if (options.onCompleted) worker.on('completed', options.onCompleted)
-      if (options.onActive) worker.on('active', options.onActive)
-      if (options.onStalled) worker.on('stalled', (jobId) => options.onStalled?.(jobId))
+      for (const event in options.events) {
+        const rawEventName = event.replace(/^on/, '') as keyof WorkerListener<Static<T>>
+        worker.on(rawEventName, options.events[event as keyof typeof options.events])
+      }
     }
 
     const registerWorker = () => {
