@@ -2,8 +2,8 @@ import { createEnv } from '@questpie/shared/env/create-env'
 import { StringBoolean, StringInt } from '@questpie/shared/schemas/misc'
 import { Type } from '@sinclair/typebox'
 
-export const env = createEnv(
-  Type.Object({
+export const env = createEnv({
+  server: {
     PORT: StringInt({ default: 3333 }),
     NODE_ENV: Type.Union(
       [Type.Literal('production'), Type.Literal('development'), Type.Literal('test')],
@@ -43,6 +43,27 @@ export const env = createEnv(
     MAIL_FROM: Type.String({
       default: 'noreply@yourdomain.com',
     }),
-  }),
-  Bun.env
-)
+  },
+
+  runtimeEnv: {
+    PORT: Bun.env.PORT,
+    NODE_ENV: Bun.env.NODE_ENV,
+    DATABASE_URL: Bun.env.DATABASE_URL,
+    SERVER_URL: Bun.env.SERVER_URL,
+    S3_ENDPOINT: Bun.env.S3_ENDPOINT,
+    S3_PORT: Bun.env.S3_PORT,
+    S3_SSL: Bun.env.S3_SSL,
+    S3_BUCKET: Bun.env.S3_BUCKET,
+    S3_ACCESS_KEY: Bun.env.S3_ACCESS_KEY,
+    S3_SECRET_KEY: Bun.env.S3_SECRET_KEY,
+    REDIS_URL: Bun.env.REDIS_URL,
+    PUSHER_APP_ID: Bun.env.PUSHER_APP_ID,
+    PUSHER_KEY: Bun.env.PUSHER_KEY,
+    PUSHER_SECRET: Bun.env.PUSHER_SECRET,
+    PUSHER_HOST: Bun.env.PUSHER_HOST,
+    PUSHER_PORT: Bun.env.PUSHER_PORT,
+    PUSHER_USE_TLS: Bun.env.PUSHER_USE_TLS,
+    RESEND_API_KEY: Bun.env.RESEND_API_KEY,
+    MAIL_FROM: Bun.env.MAIL_FROM,
+  },
+})

@@ -1,4 +1,4 @@
-import { apiReact } from '@questpie/webapp/api/react'
+import { apiClient } from '@questpie/webapp/api/api.client'
 import { env } from '@questpie/webapp/env'
 import PusherJs from 'pusher-js'
 
@@ -10,16 +10,16 @@ export type PusherOverrides = {
 }
 
 export function createPusherInstance(overrides?: PusherOverrides) {
-  return new PusherJs(overrides?.appKey || env.NEXT_PUBLIC_PUSHER_APP_KEY, {
-    cluster: env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
-    wsPort: env.NEXT_PUBLIC_PUSHER_PORT,
-    wsHost: env.NEXT_PUBLIC_PUSHER_HOST,
-    forceTLS: env.NEXT_PUBLIC_PUSHER_USE_TLS,
+  return new PusherJs(overrides?.appKey || env.PUBLIC_PUSHER_APP_KEY, {
+    cluster: env.PUBLIC_PUSHER_APP_CLUSTER,
+    wsPort: env.PUBLIC_PUSHER_PORT,
+    wsHost: env.PUBLIC_PUSHER_HOST,
+    forceTLS: env.PUBLIC_PUSHER_USE_TLS,
     enabledTransports: ['ws', 'wss'],
     disableStats: true,
     userAuthentication: {
       customHandler: (params, cb) => {
-        apiReact.auth.pusher.user
+        apiClient.auth.pusher.user
           .post({
             socketId: params.socketId,
           })
@@ -33,7 +33,7 @@ export function createPusherInstance(overrides?: PusherOverrides) {
     },
     channelAuthorization: {
       customHandler: (params, cb) => {
-        apiReact.auth.pusher.channel
+        apiClient.auth.pusher.channel
           .post({
             socketId: params.socketId,
             channelName: params.channelName,
