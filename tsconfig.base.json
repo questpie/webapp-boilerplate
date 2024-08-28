@@ -31,7 +31,8 @@
       "@questpie/translations/*": ["./packages/translations/src/*"],
       "@questpie/mail/*": ["./packages/mail/src/*"],
       "@questpie/jobs/*": ["./packages/jobs/src/*"],
-      "@questpie/redis/*": ["./packages/redis/src/*"]
+      "@questpie/redis/*": ["./packages/redis/src/*"],
+      "@questpie/webapp/*": ["./apps/webapp/src/*"]
     }
   }
 }

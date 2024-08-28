@@ -4,6 +4,7 @@
 
 import { protectedMiddleware } from '@questpie/api/modules/auth/auth.middleware'
 import { pusher } from '@questpie/api/pusher/pusher.client'
+import { getChannelName } from '@questpie/shared/utils/pusher'
 import Elysia, { t } from 'elysia'
 
 export const chatBodySchema = t.Object({
@@ -25,7 +26,15 @@ export const chatRoutes = new Elysia({ prefix: '/chat/:roomId' }).use(protectedM
       timestamp: Date.now(),
     }
 
-    pusher.trigger(`private-room-${roomId}`, 'chat-event', message)
+    // add message to db
+
+    const channelName = getChannelName('private-room-{{roomId}}}', {
+      roomId,
+    })
+    // send message to pusher
+    pusher.trigger(channelName, 'chat-event', message)
+
+    pusher.authenticateUser
 
     return { success: true }
   },

@@ -1,18 +1,10 @@
 import { createEnv } from '@questpie/shared/env/create-env'
-import { Type, type StringOptions } from '@sinclair/typebox'
-
-const StringInt = (opts: StringOptions = {}) =>
-  Type.Transform(Type.String(opts))
-    .Decode((v) => Number.parseInt(v, 10))
-    .Encode(String)
-const StringBoolean = (opts: StringOptions = {}) =>
-  Type.Transform(Type.String(opts))
-    .Decode((v) => v === 'true')
-    .Encode(String)
+import { StringBoolean, StringInt } from '@questpie/shared/schemas/misc'
+import { Type } from '@sinclair/typebox'
 
 export const env = createEnv(
   Type.Object({
-    PORT: StringInt({ default: 3000 }),
+    PORT: StringInt({ default: 3333 }),
     NODE_ENV: Type.Union(
       [Type.Literal('production'), Type.Literal('development'), Type.Literal('test')],
       {

@@ -8,4 +8,5 @@ export const pusher = new Pusher({
   host: env.PUSHER_HOST,
   port: String(env.PUSHER_PORT),
   useTLS: env.PUSHER_USE_TLS,
+  encrypted: true,
 })

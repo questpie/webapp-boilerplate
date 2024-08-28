@@ -42,7 +42,7 @@
     "ua-parser-js": "^1.0.38"
   },
   "devDependencies": {
-    "@elysiajs/eden": "1.1.2",
+    "@elysiajs/eden": "^1.1.2",
     "@types/bun": "latest",
     "@types/nodemailer": "^6.4.15",
     "@types/geoip-lite": "^1.4.4",
