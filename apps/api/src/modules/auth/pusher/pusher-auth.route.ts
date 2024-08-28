@@ -1,24 +1,48 @@
 import { protectedMiddleware } from '@questpie/api/modules/auth/auth.middleware'
 import { pusher } from '@questpie/api/pusher/pusher.client'
 import Elysia, { t } from 'elysia'
+import type { User } from 'lucia'
 
-export const pusherAuthRoutes = new Elysia().use(protectedMiddleware).post(
-  '/pusher',
-  async ({ auth, body }) => {
-    const { socket_id, channel_name } = body
-    const userId = auth.user.id
+export function createPusherAuthEndpoint<
+  TRoute extends string,
+  TUserInfo extends Record<string, any>,
+>(
+  route: TRoute,
+  /**
+   * If user is not allowed to join the channel, return a string error message or null
+   * If user is allowed to join the channel, return the user info that should be bind to the socket
+   */
+  validateUser: (authOpts: {
+    user: User
+    socketId: string
+    channelName: string
+  }) => Promise<TUserInfo | null | string>
+) {
+  return new Elysia().use(protectedMiddleware).post(
+    route,
+    async ({ auth, body, error }) => {
+      const userInfo = await validateUser({
+        channelName: body.channelName,
+        user: auth.user,
+        socketId: body.socketId,
+      })
 
-    const authResponse = pusher.authorizeChannel(socket_id, channel_name, {
-      user_id: userId,
-      user_info: { name: auth.user.name },
-    })
+      if (userInfo === null || typeof userInfo === 'string') {
+        return error(403, userInfo ?? 'Forbidden')
+      }
 
-    return authResponse
-  },
-  {
-    body: t.Object({
-      socket_id: t.String(),
-      channel_name: t.String(),
-    }),
-  }
-)
+      const authResponse = pusher.authorizeChannel(body.socketId, body.channelName, {
+        user_id: auth.user.id,
+        user_info: userInfo,
+      })
+
+      return authResponse
+    },
+    {
+      body: t.Object({
+        socketId: t.String(),
+        channelName: t.String(),
+      }),
+    }
+  )
+}
