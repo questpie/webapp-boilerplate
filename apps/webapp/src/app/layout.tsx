@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter as FontSans } from 'next/font/google'
-import './globals.css'
-import { cn } from '@questpie/webapp/app/_utils/style.utils'
-import { ThemeProvider } from 'next-themes'
+import '@questpie/ui/css'
+import { ThemeProvider } from '@questpie/ui/components/theme-provider'
+import { cn } from '@questpie/ui/lib'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
