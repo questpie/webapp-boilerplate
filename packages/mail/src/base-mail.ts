@@ -27,5 +27,5 @@ export type MailOptions = {
   tags?: { name: string; value: string }[]
 } & (
   | { react: ReactElement; text?: never; html?: never }
-  | { text: string; html?: string; react?: never }
+  | { text?: string; html?: string; react?: never }
 )

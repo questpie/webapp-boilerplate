@@ -1,8 +1,8 @@
+import '@questpie/ui/css'
+import { cn } from '@questpie/ui/lib'
+import { RootProviders } from '@questpie/webapp/app/root-providers'
 import type { Metadata } from 'next'
 import { Inter as FontSans } from 'next/font/google'
-import '@questpie/ui/css'
-import { ThemeProvider } from '@questpie/ui/components/theme-provider'
-import { cn } from '@questpie/ui/lib'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
-        <ThemeProvider>{children}</ThemeProvider>
+        <RootProviders>{children}</RootProviders>
       </body>
     </html>
   )

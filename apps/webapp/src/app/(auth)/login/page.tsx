@@ -3,17 +3,25 @@ import { Icon } from '@questpie/ui/components/icon'
 import { Button } from '@questpie/ui/components/ui/button'
 import { Input } from '@questpie/ui/components/ui/input'
 import { Label } from '@questpie/ui/components/ui/label'
-import Image from 'next/image'
+import { apiClient } from '@questpie/webapp/api/api.client'
+import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
-import { useState } from 'react'
-import { useId } from 'react'
+import { useId, useState } from 'react'
 
 export default function AuthPage() {
   const [email, setEmail] = useState('')
 
+  const magicLinkMutation = useMutation({
+    mutationFn: async (email: string) => {
+      return apiClient.auth['magic-link'].index.post({
+        email,
+      })
+    },
+  })
+
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Send magic link to:', email)
+    magicLinkMutation.mutate(email)
   }
 
   const patternId = useId()
@@ -39,7 +47,12 @@ export default function AuthPage() {
                   required
                 />
               </div>
-              <Button className='w-full gap-2' type='submit'>
+              <Button
+                className='w-full gap-2'
+                type='submit'
+                isLoading={magicLinkMutation.isPending}
+                loadingText='Sending...'
+              >
                 <Icon icon='lucide:mail' />
                 Sign in with Email
               </Button>
@@ -76,7 +89,7 @@ export default function AuthPage() {
           </p>
           <div className='text-center mt-8'>
             <h1 className='text-base font-bold'>QUESTPIE</h1>
-            <p className='text-xs text-muted-foreground'>Your Quest Management Solution</p>
+            <p className='text-xs text-muted-foreground'>Your WebApp Boilerplate</p>
           </div>
         </div>
       </div>

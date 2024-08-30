@@ -4,14 +4,18 @@
   "files": ["src"],
   "type": "module",
   "devDependencies": {
+    "@questpie/shared": "workspace:*",
     "@types/bun": "latest",
-    "@types/react": "^18",
+    "@types/html-to-text": "^9.0.4",
     "@types/nodemailer": "^6.4.15",
-    "@questpie/shared": "workspace:*"
+    "@types/react": "^18"
   },
   "peerDependencies": {
     "typescript": "^5.0.0",
     "nodemailer": "^6.9.14",
     "resend": "^4.0.0"
+  },
+  "dependencies": {
+    "html-to-text": "^9.0.5"
   }
 }

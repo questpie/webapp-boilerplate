@@ -1,7 +1,7 @@
 import { createPusherInstance, type PusherOverrides } from '@questpie/webapp/pusher/pusher.client'
 import type PusherJs from 'pusher-js'
 import type { Channel } from 'pusher-js'
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
 /**
  * Context for Pusher instance and connection status
@@ -65,6 +65,8 @@ type UseSubscriptionProps<TMessageData = unknown> = {
   eventName: string
   /** Callback function to handle received messages */
   onMessage: (data: TMessageData) => void
+  /** Whether the subscription is enabled */
+  enabled?: boolean
 }
 
 /**
@@ -77,13 +79,14 @@ export function useSubscription<TMessageData = unknown>({
   channelName,
   eventName,
   onMessage,
+  enabled = true, // Add enabled prop with default value true
 }: UseSubscriptionProps<TMessageData>): { error: Error | null } {
   const { pusher } = usePusher()
   const [channel, setChannel] = useState<Channel | null>(null)
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
-    if (!pusher) return
+    if (!pusher || !enabled) return // Only subscribe if enabled is true
 
     try {
       const pusherChannel = pusher.subscribe(channelName)
@@ -96,10 +99,11 @@ export function useSubscription<TMessageData = unknown>({
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to subscribe to channel'))
     }
-  }, [pusher, channelName])
+  }, [pusher, channelName, enabled]) // Add enabled to dependency array
 
   useEffect(() => {
-    if (channel) {
+    if (channel && enabled) {
+      // Only bind if enabled is true
       const eventHandler = (data: TMessageData) => {
         onMessage(data)
       }
@@ -110,7 +114,7 @@ export function useSubscription<TMessageData = unknown>({
         channel.unbind(eventName, eventHandler)
       }
     }
-  }, [channel, eventName, onMessage])
+  }, [channel, eventName, onMessage, enabled]) // Add enabled to dependency array
 
   return { error }
 }

@@ -1,66 +1,49 @@
+import { applyRateLimit } from '@questpie/api/common/rate-limit'
 import { db } from '@questpie/api/db/db.client'
-import { userTable, emailVerificationTable } from '@questpie/api/db/db.schema'
+import { emailVerificationTable, userTable } from '@questpie/api/db/db.schema'
 import { env } from '@questpie/api/env'
 import { getMailClient } from '@questpie/api/mail/mail.client'
-import { lucia } from '@questpie/api/modules/auth/lucia'
-import { getDeviceInfo } from '@questpie/api/modules/auth/utils/device-info'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
 import { createDate, isWithinExpirationDate, TimeSpan } from 'oslo'
-import { alphabet, generateRandomString } from 'oslo/crypto'
 
 export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
+  .use(applyRateLimit({ limit: 10, window: 60 }))
   .post(
     '/',
     async ({ body }) => {
       const { email } = body
 
-      // Check if user exists
-      let existingUser = await db
-        .select()
-        .from(userTable)
-        .where(eq(userTable.email, email))
-        .limit(1)
-        .then((r) => r[0])
-
-      if (!existingUser) {
-        // get random 4 char hash
-        const name = email.split('@')[0]
-          ? `${email.split('@')[0]}`
-          : `User ${crypto.getRandomValues(new Uint8Array(2)).join('')}`
-
-        // Create a new user if they don't exist
-        existingUser = await db
-          .insert(userTable)
-          .values({ email, name })
-          .returning()
-          .then((r) => r[0])
-      }
-
-      // Generate token length and alphabet
-      const token = generateRandomString(63, alphabet('a-z', 'A-Z', '0-9'))
-
       // Store token in database
-      await db
+      const { token } = await db
         .insert(emailVerificationTable)
         .values({
-          id: token,
-          userId: existingUser.id,
+          type: 'magic-link',
           email,
           expiresAt: createDate(new TimeSpan(2, 'h')),
         })
-        .execute()
+        .returning({
+          token: emailVerificationTable.id,
+        })
+        .then((r) => r[0])
 
-      let link = `${env.SERVER_URL}/auth/magic-link/verify?token=${token}`
+      const url = new URL('auth/magic-link/verify', env.SERVER_URL)
+      url.searchParams.set('token', token)
       if (body.redirectTo) {
-        link += `&redirectTo=${body.redirectTo}`
+        url.searchParams.set('redirectTo', body.redirectTo)
       }
 
       const mailClient = await getMailClient()
       await mailClient.send({
         to: email,
         subject: 'Magic Link',
-        text: `Click the link to login: ${link}`,
+        html: `
+          <h1>Magic Link</h1>
+          <p>Click the link below to log in:</p>
+          <a href="${url.toString()}">Log in</a>
+          <p>This link will expire in 2 hours.</p>
+          <p>If you didn't request this, please ignore this email.</p>
+        `,
       })
 
       return { success: true }
@@ -70,7 +53,8 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
         email: t.String(),
         redirectTo: t.Optional(
           t.String({
-            description: 'Where should the user be redirected after login?',
+            description:
+              'The URL to redirect to after login. It should display a message notifying the user that they can close this page now.',
           })
         ),
       }),
@@ -78,13 +62,15 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
   )
   .get(
     '/verify',
-    async ({ query, cookie, error, redirect, request }) => {
+    async ({ query, error, redirect }) => {
       const { token } = query
 
       const storedToken = await db
         .select()
         .from(emailVerificationTable)
-        .where(eq(emailVerificationTable.id, token))
+        .where(
+          and(eq(emailVerificationTable.id, token), eq(emailVerificationTable.type, 'magic-link'))
+        )
         .limit(1)
         .then((r) => r[0])
 
@@ -92,35 +78,62 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
         return error(400, 'Invalid token')
       }
 
-      const user = await db
+      let user = await db
         .select()
         .from(userTable)
-        .where(eq(userTable.id, storedToken.userId))
+        .where(eq(userTable.email, storedToken.email))
         .limit(1)
         .then((r) => r[0])
 
       if (!user) {
-        return error(400, 'Invalid user')
+        const name = storedToken.email.split('@')[0]
+          ? `${storedToken.email.split('@')[0]}`
+          : `User ${crypto.getRandomValues(new Uint8Array(2)).join('')}`
+
+        // Create a new user if they don't exist
+        user = await db
+          .insert(userTable)
+          .values({ email: storedToken.email, name })
+          .returning()
+          .then((r) => r[0])
       }
 
-      // Create session
-      const session = await lucia.createSession(user.id, getDeviceInfo(request))
-      const sessionCookie = lucia.createSessionCookie(session.id)
-      cookie[sessionCookie.name].set({
-        value: sessionCookie.value,
-        ...sessionCookie.attributes,
-      })
-
       // Delete the used token
-      await db.delete(emailVerificationTable).where(eq(emailVerificationTable.id, token))
-      return query.redirectTo ? redirect(query.redirectTo, 301) : { success: true }
+      await db.delete(emailVerificationTable).where(and(eq(emailVerificationTable.id, token)))
+
+      /**
+       * Create short-lived auth token user can use to create session at POST /auth/session
+       * This is here for a reason, that we want this to work also with mobile auth, so we cannot just set cookie here
+       * And we also don't want to send raw token in redirectTo query params, because of security reasons
+       */
+      const authToken = await db
+        .insert(emailVerificationTable)
+        .values({
+          email: user.email,
+          type: 'auth-code',
+          expiresAt: createDate(new TimeSpan(5, 'm')),
+        })
+        .returning()
+        .then((r) => r[0])
+
+      if (!query.redirectTo) {
+        return {
+          status: 'ok',
+          token: authToken.id,
+        }
+      }
+
+      const url = new URL(query.redirectTo)
+      url.searchParams.set('token', authToken.id)
+
+      return redirect(url.toString())
     },
     {
       query: t.Object({
         token: t.String(),
         redirectTo: t.Optional(
           t.String({
-            description: 'Where should the user be redirected after login?',
+            description: 'The URL to redirect to after login.',
           })
         ),
       }),

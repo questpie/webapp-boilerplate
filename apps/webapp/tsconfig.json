@@ -19,6 +19,7 @@
       }
     ],
     "paths": {
+      "@questpie/webapp/*": ["./src/*"],
       "@questpie/ui/*": ["../../packages/ui/src/*"],
       "@questpie/shared/*": ["../../packages/shared/src/*"],
       "@questpie/api/*": ["../api/src/*"]

@@ -4,9 +4,13 @@ import Elysia from 'elysia'
 /**
  * Extracts the session from the cookie and validates it
  */
-export const authMiddleware = new Elysia()
-  .resolve(async ({ cookie }) => {
-    const sessionId = cookie[lucia.sessionCookieName]?.value
+export const authMiddleware = new Elysia({
+  name: 'auth.middleware',
+})
+  .resolve(async ({ headers }) => {
+    const authorizationHeader = headers.authorization
+    const sessionId = authorizationHeader ? lucia.readBearerToken(authorizationHeader) : null
+
     return {
       auth: sessionId ? await lucia.validateSession(sessionId) : null,
     }

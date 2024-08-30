@@ -1,30 +1,30 @@
 import cuid2 from '@paralleldrive/cuid2'
 import type { DeviceInfo } from '@questpie/api/modules/auth/utils/device-info'
 import { relations } from 'drizzle-orm'
-import { jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
-
-/**
- * We are using cuid2 for generating ids
- * - 21 characters
- * - sorted lexicographically
- * - URL friendly
- */
-const defaultCuid = cuid2.init({ length: 21 })
+import { jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 
 const primaryKey = (name = 'id') =>
   text(name)
-    .$default(() => defaultCuid())
+    .$default(() => cuid2.createId())
     .primaryKey()
 
-export const userTable = pgTable('user', {
-  id: primaryKey(),
-  email: text('email').notNull(),
-  name: text('name').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at')
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-})
+const verificationTokenCuid = cuid2.init({ length: 63 })
+
+export const userTable = pgTable(
+  'user',
+  {
+    id: primaryKey(),
+    email: text('email').notNull(),
+    name: text('name').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => ({
+    emailIndex: uniqueIndex().on(table.email),
+  })
+)
 
 export type SelectUser = typeof userTable.$inferSelect
 export type InsertUser = typeof userTable.$inferInsert
@@ -62,16 +62,20 @@ export const sessionRelations = relations(sessionTable, ({ one }) => ({
   }),
 }))
 
+export type EmailVerificationType = 'magic-link' | 'auth-code'
+
 export const emailVerificationTable = pgTable('email_verification', {
-  id: text('id').primaryKey(),
-  userId: text('user_id')
-    .notNull()
-    .references(() => userTable.id),
+  id: text('id')
+    .primaryKey()
+    .$default(() => verificationTokenCuid()),
   email: text('email').notNull(),
   expiresAt: timestamp('expires_at', {
     withTimezone: true,
     mode: 'date',
   }).notNull(),
+  type: text('type').$type<EmailVerificationType>().notNull(),
+  /** If you want your verification to be realtime store channelName here */
+  // channelName: text('channel_name'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()
@@ -80,13 +84,6 @@ export const emailVerificationTable = pgTable('email_verification', {
 
 export type SelectEmailVerification = typeof emailVerificationTable.$inferSelect
 export type InsertEmailVerification = typeof emailVerificationTable.$inferInsert
-
-export const emailVerificationRelations = relations(emailVerificationTable, ({ one }) => ({
-  user: one(userTable, {
-    fields: [emailVerificationTable.userId],
-    references: [userTable.id],
-  }),
-}))
 
 export const oauthAccountsTable = pgTable('oauth_accounts', {
   id: primaryKey(),
