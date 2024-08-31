@@ -99,7 +99,7 @@ export class JobFactory {
         createWorker()
         return
       }
-      const key = `worker_${options.name}`
+      const key = `worker__${options.name}`
 
       if (_scopedGlobal[key]) return _scopedGlobal[key]
       // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
@@ -121,7 +121,7 @@ export class JobFactory {
     if (process.env.NODE_ENV === 'production') {
       queue = createQueue()
     } else {
-      const key = `queue_${options.name}`
+      const key = `queue__${options.name}`
 
       if (_scopedGlobal[key]) {
         queue = _scopedGlobal[key]
