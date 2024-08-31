@@ -1,4 +1,4 @@
-import { sendBulkMailJob } from '@questpie/api/mail/jobs/send-bulk-mail.job'
+import { mailClient } from '@questpie/api/mail/mail.client'
 import { protectedMiddleware } from '@questpie/api/modules/auth/auth.middleware'
 import { Elysia, t } from 'elysia'
 
@@ -10,7 +10,7 @@ export const userRoutes = new Elysia({ prefix: '/user', tags: ['User'] })
   .post(
     '/send-test-mail',
     async ({ body }) => {
-      sendBulkMailJob.invoke({
+      mailClient.send({
         to: body.emails,
         subject: 'Test',
         text: 'Test',

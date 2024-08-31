@@ -2,7 +2,7 @@ import { applyRateLimit } from '@questpie/api/common/rate-limit'
 import { db } from '@questpie/api/db/db.client'
 import { emailVerificationTable, userTable } from '@questpie/api/db/db.schema'
 import { env } from '@questpie/api/env'
-import { getMailClient } from '@questpie/api/mail/mail.client'
+import { mailClient } from '@questpie/api/mail/mail.client'
 import { and, eq } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
 import { createDate, isWithinExpirationDate, TimeSpan } from 'oslo'
@@ -33,7 +33,6 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
         url.searchParams.set('redirectTo', body.redirectTo)
       }
 
-      const mailClient = await getMailClient()
       await mailClient.send({
         to: email,
         subject: 'Magic Link',

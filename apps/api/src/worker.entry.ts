@@ -1,8 +1,10 @@
-import { sendBulkMailJob } from '@questpie/api/mail/jobs/send-bulk-mail.job'
 /**
  * Register all workers here
  */
 
-sendBulkMailJob.registerWorker()
+import { mailClient } from '@questpie/api/mail/mail.client'
+import { logger } from '@questpie/shared/utils/logger'
 
-console.log('Workers instances running')
+mailClient.registerWorker()
+
+logger.info('Workers instances running')

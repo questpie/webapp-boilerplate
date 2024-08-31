@@ -1,4 +1,5 @@
-import type { Static, TSchema } from '@sinclair/typebox'
+import { logger } from '@questpie/shared/utils/logger'
+import type { Static, TAnySchema, TSchema } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
 import {
   Queue,
@@ -12,7 +13,7 @@ import {
   type WorkerOptions,
 } from 'bullmq'
 
-export type BaseJobOptions<T extends TSchema> = {
+export type BaseJobOptions<T extends TSchema = TAnySchema> = {
   name: string
   schema?: T
   handler: (job: Job<Static<T>>) => Promise<any>
@@ -36,14 +37,13 @@ export class JobFactory {
     private readonly options: JobFactoryOptions = {}
   ) {}
 
-  private info(job: Job, message: string) {
+  private info(job: Job, ...args: any[]) {
     if (this.options.verbose) {
-      // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-      console.log(`[${job.name}:${job.id}]: ${message}`)
+      logger.info(`[${job.name}:${job.id}]`, ...args)
     }
   }
 
-  createJob<T extends TSchema>(options: BaseJobOptions<T>) {
+  createJob<T extends TSchema = TAnySchema>(options: BaseJobOptions<T>) {
     const _scopedGlobal = global as any
 
     let worker: Worker | null = null
@@ -87,13 +87,14 @@ export class JobFactory {
         const rawEventName = event.replace(/^on/, '') as keyof WorkerListener<Static<T>>
         worker.on(rawEventName, options.events[event as keyof typeof options.events])
       }
+
+      logger.info('Worker registered', options.name)
     }
 
     const registerWorker = () => {
       /**
        * This makes sure HMR works in development
        */
-
       if (process.env.NODE_ENV === 'production') {
         createWorker()
         return

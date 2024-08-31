@@ -1,38 +1,39 @@
 import { env } from '@questpie/api/env'
-import type { MailClient } from '@questpie/mail/base-mail'
-import { ResendMailClient } from '@questpie/mail/resend.mail'
-import { SMTPMailClient } from '@questpie/mail/smtp.mail'
+import { jobFactory } from '@questpie/api/jobs/job-factory'
+import { ResendAdapter } from '@questpie/mail/adapter/resend.adapter'
+import { SmtpAdapter } from '@questpie/mail/adapter/smtp.adapter'
+import { MailClient, type MailAdapter } from '@questpie/mail/base-mail'
+import { logger } from '@questpie/shared/utils/logger'
 import { createTestAccount, getTestMessageUrl } from 'nodemailer'
 
-let mailClient: MailClient
+// Global binding for development mode
 
-export async function getMailClient(): Promise<MailClient> {
-  if (!mailClient) {
-    if (process.env.NODE_ENV === 'production') {
-      // if you don't have a resend api key, you can use use smptMail
-      mailClient = new ResendMailClient({ apiKey: env.RESEND_API_KEY, from: env.MAIL_FROM })
-    } else {
-      const testAccount = await createTestAccount()
-      mailClient = new SMTPMailClient({
-        from: env.MAIL_FROM,
-        transport: {
-          host: testAccount.smtp.host,
-          port: testAccount.smtp.port,
-          secure: testAccount.smtp.secure,
-          auth: {
-            user: testAccount.user,
-            pass: testAccount.pass,
-          },
-        },
-        afterSendCallback: async (info) => {
-          // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-          console.log('Message sent: %s', info.messageId)
-          // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-          console.log('Preview URL: %s', getTestMessageUrl(info))
-        },
-      })
-    }
+const adapterPromise = async (): Promise<MailAdapter> => {
+  if (process.env.NODE_ENV === 'production') {
+    return new ResendAdapter({ apiKey: env.RESEND_API_KEY })
   }
-
-  return mailClient
+  const testAccount = await createTestAccount()
+  return new SmtpAdapter({
+    transport: {
+      host: testAccount.smtp.host,
+      port: testAccount.smtp.port,
+      secure: testAccount.smtp.secure,
+      auth: {
+        user: testAccount.user,
+        pass: testAccount.pass,
+      },
+    },
+    afterSendCallback: async (info) => {
+      logger.debug('Message sent:', info.messageId)
+      logger.info('Preview URL:', getTestMessageUrl(info))
+    },
+  })
 }
+
+export const mailClient = new MailClient({
+  adapter: adapterPromise(),
+  from: env.MAIL_FROM,
+  jobFactory,
+})
+
+// For HMR in development

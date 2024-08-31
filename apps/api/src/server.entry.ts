@@ -1,5 +1,6 @@
 import { env } from '@questpie/api/env'
 import { api } from '@questpie/api/index'
+import { logger } from '@questpie/shared/utils/logger'
 import { Elysia } from 'elysia'
 
 /**
@@ -8,5 +9,4 @@ import { Elysia } from 'elysia'
  */
 const app = new Elysia().use(api).listen(env.PORT)
 
-// biome-ignore lint/suspicious/noConsoleLog: <explanation>
-console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`)
+logger.info(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`)
