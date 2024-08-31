@@ -20,7 +20,7 @@ export const rateLimit = () => {
       applyRateLimit(options?: RateLimitOptions) {
         if (!options) return
 
-        onBeforeHandle(async ({ request, set }) => {
+        onBeforeHandle(async ({ request, set, error }) => {
           const limit = options.limit ?? 100
           const window = options.window ?? 60
           const keyPrefix = options.keyPrefix ?? 'rate-limit:'
@@ -38,13 +38,10 @@ export const rateLimit = () => {
           const count = result ? result[0] : null
 
           const remaining = Math.max(0, limit - (count?.[1] as number))
-          const reset = Math.ceil(Date.now() / 1000) + window
+          //   const reset = Math.ceil(Date.now() / 1000) + window
 
-          return {
-            limit,
-            remaining,
-            reset,
-            exceeded: remaining === 0,
+          if (remaining === 0) {
+            return error(429, 'Too many requests')
           }
         })
       },

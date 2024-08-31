@@ -6,7 +6,7 @@ import { Label } from '@questpie/ui/components/ui/label'
 import { apiClient } from '@questpie/webapp/api/api.client'
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
-import { useId, useState } from 'react'
+import { useState } from 'react'
 
 export default function AuthPage() {
   const [email, setEmail] = useState('')
@@ -15,6 +15,7 @@ export default function AuthPage() {
     mutationFn: async (email: string) => {
       return apiClient.auth['magic-link'].index.post({
         email,
+        redirectTo: `${window.location.origin}/login/callback?token={{token}}`,
       })
     },
   })
@@ -24,15 +25,13 @@ export default function AuthPage() {
     magicLinkMutation.mutate(email)
   }
 
-  const patternId = useId()
-
   return (
-    <div className='flex justify-center items-center min-h-screen bg-muted'>
+    <div className='flex justify-center items-center min-h-screen '>
       <div className='w-full max-w-md p-8'>
         <div className='flex flex-col gap-8'>
           <div className='space-y-2 text-center'>
             <h2 className='text-3xl font-bold'>Welcome Back</h2>
-            <p className='text-gray-500'>Sign in to continue your journey</p>
+            <p className='text-muted-foreground'>Sign in to continue your journey</p>
           </div>
           <div className='space-y-4'>
             <form onSubmit={handleEmailSubmit} className='space-y-4'>
@@ -62,7 +61,7 @@ export default function AuthPage() {
                 <span className='w-full border-t border-border' />
               </div>
               <div className='relative flex justify-center text-xs uppercase'>
-                <span className='bg-muted px-2 text-muted-foreground'>Or continue with</span>
+                <span className='bg-background px-2 text-muted-foreground'>Or continue with</span>
               </div>
             </div>
             <div className='grid grid-cols-2 gap-4'>

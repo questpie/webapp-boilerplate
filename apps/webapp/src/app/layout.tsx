@@ -1,5 +1,7 @@
+import { Icon } from '@questpie/ui/components/icon'
 import '@questpie/ui/css'
 import { cn } from '@questpie/ui/lib'
+import { apiServer } from '@questpie/webapp/api/api.server'
 import { RootProviders } from '@questpie/webapp/app/root-providers'
 import type { Metadata } from 'next'
 import { Inter as FontSans } from 'next/font/google'
@@ -14,15 +16,18 @@ const fontSans = FontSans({
   variable: '--font-sans',
 })
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const sessionResp = await apiServer.auth.session.index.get()
+
   return (
-    <html lang='en'>
+    <html lang='en' suppressHydrationWarning>
       <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
-        <RootProviders>{children}</RootProviders>
+        <RootProviders authData={sessionResp.data}>{children}</RootProviders>
+        <Icon icon='lucide:arrow-left' />
       </body>
     </html>
   )

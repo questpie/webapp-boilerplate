@@ -65,7 +65,13 @@ export const sessionRoutes = new Elysia({ prefix: '/session' })
     }
   )
   .guard((app) => {
-    return app.use(protectedMiddleware).get('/', async ({ auth }) => {
-      return auth
-    })
+    return app
+      .use(protectedMiddleware)
+      .get('/', async ({ auth }) => {
+        return auth
+      })
+      .delete('/', async ({ auth }) => {
+        await lucia.invalidateSession(auth.session.id)
+        return { success: true }
+      })
   })

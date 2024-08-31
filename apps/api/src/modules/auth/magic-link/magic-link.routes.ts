@@ -53,7 +53,7 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
         redirectTo: t.Optional(
           t.String({
             description:
-              'The URL to redirect to after login. It should display a message notifying the user that they can close this page now.',
+              'The URL to redirect to after login. You can use {{token}} to replace with the actual token.',
           })
         ),
       }),
@@ -122,6 +122,11 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
         }
       }
 
+      const hasTemplate = query.redirectTo.includes('{{token}}')
+      if (hasTemplate) {
+        return redirect(query.redirectTo.replace('{{token}}', authToken.id))
+      }
+
       const url = new URL(query.redirectTo)
       url.searchParams.set('token', authToken.id)
 
@@ -132,7 +137,8 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
         token: t.String(),
         redirectTo: t.Optional(
           t.String({
-            description: 'The URL to redirect to after login.',
+            description:
+              'The URL to redirect to after login. You can use {{token}} to replace with the actual token.',
           })
         ),
       }),

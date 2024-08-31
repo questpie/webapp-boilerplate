@@ -1,3 +1,4 @@
+import cors from '@elysiajs/cors'
 import { env } from '@questpie/api/env'
 import { api } from '@questpie/api/index'
 import { logger } from '@questpie/shared/utils/logger'
