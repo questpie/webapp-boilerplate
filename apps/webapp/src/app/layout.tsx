@@ -27,7 +27,6 @@ export default async function RootLayout({
     <html lang='en' suppressHydrationWarning>
       <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
         <RootProviders authData={sessionResp.data}>{children}</RootProviders>
-        <Icon icon='lucide:arrow-left' />
       </body>
     </html>
   )
