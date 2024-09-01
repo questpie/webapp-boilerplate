@@ -5,6 +5,7 @@ import { google, lucia } from '../lucia'
 import { db } from '@questpie/api/db/db.client'
 import { oauthAccountsTable, userTable } from '@questpie/api/db/db.schema'
 import { getDeviceInfo } from '@questpie/api/modules/auth/utils/device-info'
+import { generalEnv } from '@questpie/shared/env/general.env'
 
 export const googleRoutes = new Elysia()
   .get(
@@ -16,20 +17,20 @@ export const googleRoutes = new Elysia()
       cookie.state.set({
         value: state,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: generalEnv.PUBLIC_NODE_ENV === 'production',
         path: '/',
       })
       cookie.code_verifier.set({
         value: codeVerifier,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: generalEnv.PUBLIC_NODE_ENV === 'production',
         path: '/',
       })
 
       cookie.redirectTo.set({
         value: query.redirectTo,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: generalEnv.PUBLIC_NODE_ENV === 'production',
         path: '/',
       })
 

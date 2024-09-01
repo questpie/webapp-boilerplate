@@ -2,6 +2,7 @@ import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle'
 import { db } from '@questpie/api/db/db.client'
 import { sessionTable, userTable } from '@questpie/api/db/db.schema'
 import type { DeviceInfo } from '@questpie/api/modules/auth/utils/device-info'
+import { generalEnv } from '@questpie/shared/env/general.env'
 import { Google } from 'arctic'
 import { Lucia } from 'lucia'
 
@@ -11,7 +12,7 @@ export const lucia = new Lucia(adapter, {
   sessionCookie: {
     expires: false,
     attributes: {
-      secure: process.env.NODE_ENV === 'production',
+      secure: generalEnv.PUBLIC_NODE_ENV === 'production',
     },
   },
   getUserAttributes: (attributes) => {

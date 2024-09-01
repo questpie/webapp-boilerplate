@@ -1,10 +1,17 @@
 'use client'
+import { Icon as IconOg, loadIcon, type IconProps } from '@iconify/react'
+import { useSuspenseQuery } from '@tanstack/react-query'
 
-import { Icon as IconOg, loadIcon } from '@iconify/react'
-import { use, useMemo, type PropsWithoutRef } from 'react'
+export function Icon(props: IconProps) {
+  const iconQuery = useSuspenseQuery({
+    queryKey: ['icon', String(props.icon)],
+    queryFn: () => (typeof props.icon === 'string' ? loadIcon(String(props.icon)) : props.icon),
+    // always cache first
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    staleTime: Number.POSITIVE_INFINITY,
+  })
 
-export const Icon = (props: PropsWithoutRef<typeof IconOg> & { icon: string }) => {
-  const icon = use(useMemo(() => loadIcon(props.icon), [props.icon]))
-
-  return <IconOg {...props} icon={icon} ssr />
+  return <IconOg {...props} icon={iconQuery.data} ssr />
 }

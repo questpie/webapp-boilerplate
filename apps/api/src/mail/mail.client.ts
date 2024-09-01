@@ -3,13 +3,14 @@ import { jobFactory } from '@questpie/api/jobs/job-factory'
 import { ResendAdapter } from '@questpie/mail/adapter/resend.adapter'
 import { SmtpAdapter } from '@questpie/mail/adapter/smtp.adapter'
 import { MailClient, type MailAdapter } from '@questpie/mail/base-mail'
+import { generalEnv } from '@questpie/shared/env/general.env'
 import { logger } from '@questpie/shared/utils/logger'
 import { createTestAccount, getTestMessageUrl } from 'nodemailer'
 
 // Global binding for development mode
 
 const adapterPromise = async (): Promise<MailAdapter> => {
-  if (process.env.NODE_ENV === 'production') {
+  if (generalEnv.PUBLIC_NODE_ENV === 'production') {
     return new ResendAdapter({ apiKey: env.RESEND_API_KEY })
   }
   const testAccount = await createTestAccount()

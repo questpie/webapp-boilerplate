@@ -1,16 +1,11 @@
 import { createEnv } from '@questpie/shared/env/create-env'
+import { generalEnv } from '@questpie/shared/env/general.env'
 import { StringBoolean, StringInt } from '@questpie/shared/schemas/misc'
 import { Type } from '@sinclair/typebox'
 
 export const env = createEnv({
   server: {
     PORT: StringInt({ default: 3333 }),
-    NODE_ENV: Type.Union(
-      [Type.Literal('production'), Type.Literal('development'), Type.Literal('test')],
-      {
-        default: 'development',
-      }
-    ),
 
     // database
     DATABASE_URL: Type.String(),
@@ -39,7 +34,7 @@ export const env = createEnv({
 
     // mail
     RESEND_API_KEY:
-      Bun.env.NODE_ENV === 'production' ? Type.String() : Type.Optional(Type.String()),
+      generalEnv.PUBLIC_NODE_ENV === 'production' ? Type.String() : Type.Optional(Type.String()),
     MAIL_FROM: Type.String({
       default: 'noreply@yourdomain.com',
     }),
@@ -47,7 +42,6 @@ export const env = createEnv({
 
   runtimeEnv: {
     PORT: Bun.env.PORT,
-    NODE_ENV: Bun.env.NODE_ENV,
     DATABASE_URL: Bun.env.DATABASE_URL,
     SERVER_URL: Bun.env.SERVER_URL,
     S3_ENDPOINT: Bun.env.S3_ENDPOINT,

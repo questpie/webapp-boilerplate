@@ -1,4 +1,6 @@
-const isDevelopment = process.env.NODE_ENV !== 'production'
+import { generalEnv } from '@questpie/shared/env/general.env'
+
+const isDevelopment = generalEnv.PUBLIC_NODE_ENV !== 'production'
 
 function createLogger(level: 'dev' | 'prod') {
   return {

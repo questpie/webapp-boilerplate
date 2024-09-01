@@ -1,9 +1,10 @@
 'use client'
+import { apiClient } from '@questpie/app/api/api.client'
 import { Icon } from '@questpie/ui/components/icon'
 import { Button } from '@questpie/ui/components/ui/button'
 import { Input } from '@questpie/ui/components/ui/input'
 import { Label } from '@questpie/ui/components/ui/label'
-import { apiClient } from '@questpie/app/api/api.client'
+import { toast } from '@questpie/ui/components/ui/sonner'
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -22,7 +23,11 @@ export default function AuthPage() {
 
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    magicLinkMutation.mutate(email)
+    toast.promise(magicLinkMutation.mutateAsync(email), {
+      loading: 'Sending magic link...',
+      success: 'Magic link sent',
+      error: 'Failed to send magic link',
+    })
   }
 
   return (
@@ -51,6 +56,7 @@ export default function AuthPage() {
                 type='submit'
                 isLoading={magicLinkMutation.isPending}
                 loadingText='Sending...'
+                disabled={magicLinkMutation.status === 'success'}
               >
                 <Icon icon='lucide:mail' />
                 Sign in with Email

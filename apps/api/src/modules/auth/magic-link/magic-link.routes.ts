@@ -3,6 +3,7 @@ import { db } from '@questpie/api/db/db.client'
 import { emailVerificationTable, userTable } from '@questpie/api/db/db.schema'
 import { env } from '@questpie/api/env'
 import { mailClient } from '@questpie/api/mail/mail.client'
+import MailMagicLink from '@questpie/transactional/emails/mail-magic-link'
 import { and, eq } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
 import { createDate, isWithinExpirationDate, TimeSpan } from 'oslo'
@@ -36,13 +37,12 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
       await mailClient.send({
         to: email,
         subject: 'Magic Link',
-        html: `
-          <h1>Magic Link</h1>
-          <p>Click the link below to log in:</p>
-          <a href="${url.toString()}">Log in</a>
-          <p>This link will expire in 2 hours.</p>
-          <p>If you didn't request this, please ignore this email.</p>
-        `,
+        react: MailMagicLink({
+          data: {
+            email,
+            magicLinkUrl: url.toString(),
+          },
+        }),
       })
 
       return { success: true }

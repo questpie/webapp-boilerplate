@@ -1,3 +1,4 @@
+import { generalEnv } from '@questpie/shared/env/general.env'
 import { logger } from '@questpie/shared/utils/logger'
 import type { Static, TAnySchema, TSchema } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
@@ -95,7 +96,7 @@ export class JobFactory {
       /**
        * This makes sure HMR works in development
        */
-      if (process.env.NODE_ENV === 'production') {
+      if (generalEnv.PUBLIC_NODE_ENV === 'production') {
         createWorker()
         return
       }
@@ -118,7 +119,7 @@ export class JobFactory {
      * This makes sure HMR works in development
      */
     let queue: Queue
-    if (process.env.NODE_ENV === 'production') {
+    if (generalEnv.PUBLIC_NODE_ENV === 'production') {
       queue = createQueue()
     } else {
       const key = `queue__${options.name}`

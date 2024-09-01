@@ -30,6 +30,10 @@ export class TypeBoxDecodeEnvError extends TypeBoxError {
   }
 }
 
+type PublicEnv<T> = {
+  [K in keyof T]: K extends `PUBLIC_${string}` ? T[K] : never
+}
+
 export type CombinedKeys<
   T extends object | undefined,
   U extends object | undefined,
@@ -42,8 +46,8 @@ export type CombinedKeys<
     : never
 
 export type CombinedObject<
-  T extends Record<string, any> | undefined,
-  U extends Record<string, any> | undefined,
+  T extends Record<`PUBLIC_${string}`, Exclude<TSchema, TObject>> | undefined,
+  U extends Record<string, Exclude<TSchema, TObject>> | undefined,
 > = T extends object
   ? U extends object
     ? { [K in keyof T | keyof U]: K extends keyof T ? T[K] : K extends keyof U ? U[K] : never }
@@ -56,7 +60,7 @@ export type CreteEnvOpts<
   TClientEnv extends Record<`PUBLIC_${string}`, Exclude<TSchema, TObject>> | undefined = undefined,
   TServerEnv extends Record<string, Exclude<TSchema, TObject>> | undefined = undefined,
 > = {
-  client?: TClientEnv
+  client?: PublicEnv<TClientEnv>
   server?: TServerEnv
   skipValidation?: boolean
   runtimeEnv: Record<keyof CombinedObject<TClientEnv, TServerEnv>, string | undefined>
@@ -75,7 +79,7 @@ export function createEnv<
   const server = opts.server ?? {}
 
   for (const key in client) {
-    if (!key.startsWith('PUBLIC_' ?? ''))
+    if (!key.startsWith('PUBLIC_'))
       throw new Error(`Wrong client env name '${key}'. Prefix is 'PUBLIC_'`)
     combinedObj[key] = client[key as keyof typeof client]
   }
