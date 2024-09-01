@@ -3,6 +3,7 @@ import { db } from '@questpie/api/db/db.client'
 import { emailVerificationTable, userTable } from '@questpie/api/db/db.schema'
 import { env } from '@questpie/api/env'
 import { mailClient } from '@questpie/api/mail/mail.client'
+import { generalEnv } from '@questpie/shared/env/general.env'
 import MailMagicLink from '@questpie/transactional/emails/mail-magic-link'
 import { and, eq } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
@@ -36,7 +37,7 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
 
       await mailClient.send({
         to: email,
-        subject: 'Magic Link',
+        subject: `Login to ${generalEnv.PUBLIC_APP_NAME}`,
         react: MailMagicLink({
           data: {
             email,
