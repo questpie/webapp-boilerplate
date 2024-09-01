@@ -9,6 +9,10 @@ export interface CacheAdapter {
 }
 
 export type CacheOptions = {
+  /**
+   * Time-to-live in seconds. If not provided, the value will be cached indefinitely.
+   * Can be overridden by the ttl parameter in the `set` and `withCached` methods.
+   */
   ttl?: number
 }
 
@@ -59,7 +63,7 @@ export class CacheClient {
    * Retrieves a value from the cache, or fetches it using the provided function if not found.
    * @param key - The key of the value to retrieve.
    * @param fetchFunction - The function to fetch the value if not found in the cache.
-   * @param ttl - Optional time-to-live in seconds.
+   * @param ttl - Optional time-to-live in seconds. If not provided, the default TTL from the cache options will be used.
    * @returns The cached or fetched value.
    */
   async withCached<T>(key: string, fetchFunction: () => Promise<T>, ttl?: number): Promise<T> {
