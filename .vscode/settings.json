@@ -77,5 +77,8 @@
   },
   "[yaml]": {
     "editor.defaultFormatter": "biomejs.biome"
-  }
+  },
+
+  // temporary fix till this is fixed https://github.com/microsoft/TypeScript/issues/59119
+  "typescript.tsserver.experimental.useVsCodeWatcher": false
 }

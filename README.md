@@ -26,11 +26,11 @@ This is a monorepo boilerplate used inside QUESTPIE.com projects.
   - [x] OAuth example (google)
 - [x] Resend/Nodemailer Setup -> unified provider agnostic email sending interface  
   - [x] Preview URL on dev
-- [ ] Trigger.dev for jobs
+- [x] TypeSafe Bullmq with Typebox for jobs
 - [ ] Payment integration 
   - [ ] Stripe (default)
   - [ ] Routes
-  - [ ] Webhooks with Trigger.dev
+  - [ ] Stripe Webhooks with Jobs
   - [ ] fraud prevention
   - [ ] Checkout
   - [ ] Customer sync
