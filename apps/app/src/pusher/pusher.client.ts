@@ -1,5 +1,5 @@
-import { apiClient } from '@questpie/webapp/api/api.client'
-import { env } from '@questpie/webapp/env'
+import { apiClient } from '@questpie/app/api/api.client'
+import { env } from '@questpie/app/env'
 import PusherJs from 'pusher-js'
 
 export type PusherOverrides = {

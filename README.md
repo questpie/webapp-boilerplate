@@ -1,4 +1,4 @@
-# @questpie/webapp
+# @questpie/app
 
 This is a monorepo boilerplate used inside QUESTPIE.com projects.
 

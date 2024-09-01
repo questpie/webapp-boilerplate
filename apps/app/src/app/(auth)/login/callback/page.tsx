@@ -1,5 +1,5 @@
 'use client'
-import { useAuthActions } from '@questpie/webapp/app/(auth)/use-auth'
+import { useAuthActions } from '@questpie/app/app/(auth)/use-auth'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 

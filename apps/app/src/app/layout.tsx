@@ -1,8 +1,8 @@
 import { Icon } from '@questpie/ui/components/icon'
 import '@questpie/ui/css'
 import { cn } from '@questpie/ui/lib'
-import { apiServer } from '@questpie/webapp/api/api.server'
-import { RootProviders } from '@questpie/webapp/app/root-providers'
+import { apiServer } from '@questpie/app/api/api.server'
+import { RootProviders } from '@questpie/app/app/root-providers'
 import type { Metadata } from 'next'
 import { Inter as FontSans } from 'next/font/google'
 

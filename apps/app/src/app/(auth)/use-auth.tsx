@@ -1,9 +1,9 @@
 'use client'
 
-import { apiClient } from '@questpie/webapp/api/api.client'
-import { setSession as setSessionAction } from '@questpie/webapp/app/(auth)/auth.actions'
-import { AtomsHydrator } from '@questpie/webapp/app/_atoms/atoms-provider'
-import { getRootStore } from '@questpie/webapp/app/_atoms/root-store'
+import { apiClient } from '@questpie/app/api/api.client'
+import { setSession as setSessionAction } from '@questpie/app/app/(auth)/auth.actions'
+import { AtomsHydrator } from '@questpie/app/app/_atoms/atoms-provider'
+import { getRootStore } from '@questpie/app/app/_atoms/root-store'
 import { useMutation } from '@tanstack/react-query'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 

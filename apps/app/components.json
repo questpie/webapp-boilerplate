@@ -11,8 +11,8 @@
     "prefix": ""
   },
   "aliases": {
-    "ui": "@questpie/webapp/app/_components",
-    "components": "@questpie/webapp/app/_components",
-    "utils": "@questpie/webapp/app/_utils/style.utils"
+    "ui": "@questpie/app/app/_components",
+    "components": "@questpie/app/app/_components",
+    "utils": "@questpie/app/app/_utils/style.utils"
   }
 }
