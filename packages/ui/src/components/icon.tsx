@@ -25,7 +25,7 @@ function IconInternal(props: IconPropsOg) {
 
   return <IconOg {...props} icon={iconQuery.data} ssr />
 }
-
+  
 export function Icon({ fallback = true, ...props }: IconProps) {
   if (!fallback) return <IconInternal {...props} />
 

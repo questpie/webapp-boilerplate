@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "bun run --bun --watch src/server.entry.ts",
     "dev:worker": "bun run --bun --watch src/worker.entry.ts",
-    "build": "bun build ./src/server.entry.ts ./src/worker.entry.ts --minify --target=bun --compile --outdir=out",
+    "prod": "bun run src/server.entry.ts",
+    "prod:worker": "bun run src/worker.entry.ts",
     "test": "bun test",
     "types:test": "tsc --noEmit test/**/*.ts",
     "types:src": "tsc --noEmit src/**/*.ts",
@@ -24,7 +25,7 @@
     "@questpie/shared": "workspace:*",
     "@questpie/jobs": "workspace:*",
     "@questpie/redis": "workspace:*",
-    "@react-email/render": "^1.0.0",
+    "@react-email/render": "^1.0.1",
     "@sinclair/typebox": "^0.33.7",
     "arctic": "^1.9.2",
     "drizzle-orm": "^0.33.0",
