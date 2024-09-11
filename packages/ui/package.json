@@ -5,7 +5,7 @@
   "files": ["src"],
   "type": "module",
   "scripts": {
-    "ui:add": "bunx shadcn@latest add"
+    "ui": "bunx shadcn@latest"
   },
   "devDependencies": {
     "@iconify-icon/react": "^2.1.0",
