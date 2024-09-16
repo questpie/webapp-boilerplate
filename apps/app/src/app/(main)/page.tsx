@@ -1,5 +1,4 @@
 import { apiServer } from '@questpie/app/api/api.server'
-import { Icon } from '@questpie/ui/components/icon'
 import Image from 'next/image'
 import Link from 'next/link'
 

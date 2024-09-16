@@ -8,7 +8,6 @@
     "ui": "bunx shadcn@latest"
   },
   "devDependencies": {
-    "@iconify-icon/react": "^2.1.0",
     "@types/bun": "latest",
     "@types/react": "^18",
     "@types/react-dom": "^18"
@@ -19,7 +18,7 @@
     "react-dom": "^18"
   },
   "dependencies": {
-    "@iconify/react": "^5.0.2",
+    "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",
@@ -30,15 +29,19 @@
     "@radix-ui/react-select": "^2.1.1",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "react-icons": "^5.3.0",
+    "@questpie/shared": "workspace:*",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tanstack/react-query": "^5.52.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.2.0",
     "next-themes": "^0.3.0",
+    "react-hook-form": "^7.53.0",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss": "^3.4.10",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vaul": "^0.9.3"
   }
 }

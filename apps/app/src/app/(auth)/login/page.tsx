@@ -1,6 +1,5 @@
 'use client'
 import { apiClient } from '@questpie/app/api/api.client'
-import { Icon } from '@questpie/ui/components/icon'
 import { Button } from '@questpie/ui/components/ui/button'
 import { Input } from '@questpie/ui/components/ui/input'
 import { Label } from '@questpie/ui/components/ui/label'
@@ -8,6 +7,9 @@ import { toast } from '@questpie/ui/components/ui/sonner'
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useState } from 'react'
+
+import { LuSend } from 'react-icons/lu'
+import { FaGithub, FaGoogle } from 'react-icons/fa'
 
 export default function AuthPage() {
   const [email, setEmail] = useState('')
@@ -58,7 +60,7 @@ export default function AuthPage() {
                 loadingText='Sending...'
                 disabled={magicLinkMutation.status === 'success'}
               >
-                <Icon icon='lucide:mail' />
+                <LuSend />
                 Sign in with Email
               </Button>
             </form>
@@ -72,11 +74,11 @@ export default function AuthPage() {
             </div>
             <div className='grid grid-cols-2 gap-4'>
               <Button variant='outline' className='gap-2'>
-                <Icon icon='logos:github-icon' />
+                <FaGithub />
                 GitHub
               </Button>
               <Button variant='outline' className='gap-2'>
-                <Icon icon='logos:google-icon' />
+                <FaGoogle />
                 Google
               </Button>
             </div>
