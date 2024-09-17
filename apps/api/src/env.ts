@@ -22,16 +22,14 @@ export const envApi = createEnv({
     // if no s3 needed, remove this
     S3_ENDPOINT: process.env.DEFAULT_DRIVER === 's3' ? Type.String() : Type.Optional(Type.String()),
     S3_PORT: process.env.DEFAULT_DRIVER === 's3' ? StringInt() : Type.Optional(StringInt()),
-    S3_SSL:
-      process.env.DEFAULT_DRIVER === 's3'
-        ? StringBoolean({ default: false })
-        : Type.Optional(StringBoolean({ default: false })),
     S3_BUCKET: process.env.DEFAULT_DRIVER === 's3' ? Type.String() : Type.Optional(Type.String()),
     S3_ACCESS_KEY:
       process.env.DEFAULT_DRIVER === 's3' ? Type.String() : Type.Optional(Type.String()),
     S3_SECRET_KEY:
       process.env.DEFAULT_DRIVER === 's3' ? Type.String() : Type.Optional(Type.String()),
     S3_REGION: process.env.DEFAULT_DRIVER === 's3' ? Type.String() : Type.Optional(Type.String()),
+    S3_USE_PATH_STYLE:
+      process.env.DEFAULT_DRIVER === 's3' ? StringBoolean() : Type.Optional(StringBoolean()),
 
     //if no redis needed, remove this
     REDIS_URL: Type.String(),
@@ -95,14 +93,13 @@ export const envApi = createEnv({
     SERVER_URL: process.env.SERVER_URL,
 
     DEFAULT_DRIVER: process.env.DEFAULT_DRIVER,
-
     S3_ENDPOINT: process.env.S3_ENDPOINT,
     S3_PORT: process.env.S3_PORT,
-    S3_SSL: process.env.S3_SSL,
     S3_BUCKET: process.env.S3_BUCKET,
     S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,
     S3_SECRET_KEY: process.env.S3_SECRET_KEY,
     S3_REGION: process.env.S3_REGION,
+    S3_USE_PATH_STYLE: process.env.S3_USE_PATH_STYLE,
 
     REDIS_URL: process.env.REDIS_URL,
 
