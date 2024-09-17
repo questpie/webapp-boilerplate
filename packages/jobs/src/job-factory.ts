@@ -10,6 +10,7 @@ import {
   type Job,
   type JobsOptions,
   type QueueOptions,
+  type RepeatableOptions,
   type WorkerListener,
   type WorkerOptions,
 } from 'bullmq'
@@ -20,6 +21,14 @@ export type BaseJobOptions<T extends TSchema = TAnySchema> = {
   handler: (job: Job<Static<T>>) => Promise<any>
   workerOptions?: Omit<WorkerOptions, 'connection' | 'prefix'>
   queueOptions?: Omit<QueueOptions, 'connection' | 'prefix'>
+
+  /**
+   * If repeat is specified, registeringWorker will also trigger the job to be repeated.
+   * If there is a schema defined, defaultValues must be provided
+   */
+  repeat?: RepeatableOptions & {
+    defaultValues?: Static<T>
+  }
 
   events?: {
     [key in keyof WorkerListener<Static<T>> as `on${Capitalize<key>}`]: WorkerListener<
@@ -90,6 +99,14 @@ export class JobFactory {
       }
 
       appLogger.info('Worker registered', options.name)
+
+      if (!options.repeat) {
+        return
+      }
+
+      invoke(options.repeat.defaultValues || {}, {
+        repeat: options.repeat,
+      })
     }
 
     const registerWorker = () => {
