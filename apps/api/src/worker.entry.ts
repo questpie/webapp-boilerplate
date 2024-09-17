@@ -3,8 +3,8 @@
  */
 
 import { mailClient } from '@questpie/api/mail/mail.client'
-import { logger } from '@questpie/shared/utils/logger'
+import { appLogger } from '@questpie/shared/utils/logger'
 
 mailClient.registerWorker()
 
-logger.info('Workers instances running')
+appLogger.info('Workers instances running')

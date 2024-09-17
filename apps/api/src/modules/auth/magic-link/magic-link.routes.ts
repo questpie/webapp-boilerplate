@@ -1,7 +1,7 @@
 import { applyRateLimit } from '@questpie/api/common/rate-limit'
 import { db } from '@questpie/api/db/db.client'
 import { emailVerificationTable, userTable } from '@questpie/api/db/db.schema'
-import { env } from '@questpie/api/env'
+import { envApi } from '@questpie/api/env'
 import { mailClient } from '@questpie/api/mail/mail.client'
 import { generalEnv } from '@questpie/shared/env/general.env'
 import MailMagicLink from '@questpie/transactional/emails/mail-magic-link'
@@ -29,7 +29,7 @@ export const magicLinkRoutes = new Elysia({ prefix: '/magic-link' })
         })
         .then((r) => r[0])
 
-      const url = new URL('auth/magic-link/verify', env.SERVER_URL)
+      const url = new URL('auth/magic-link/verify', envApi.SERVER_URL)
       url.searchParams.set('token', token)
       if (body.redirectTo) {
         url.searchParams.set('redirectTo', body.redirectTo)

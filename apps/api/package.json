@@ -33,6 +33,7 @@
     "drizzle-typebox": "^0.1.1",
     "elysia": "^1.1.7",
     "elysia-ip": "^1.0.7",
+    "flydrive": "^1.1.0",
     "geoip-lite": "^1.4.10",
     "logixlysia": "^3.6.1",
     "lucia": "^3.2.0",

@@ -1,5 +1,5 @@
 import { createPinoLogger } from '@bogeychan/elysia-logger'
-import { envApi } from '@questpie/api/envApi'
+import { envApi } from '@questpie/api/env'
 import { appLogger, Logger } from '@questpie/shared/utils/logger'
 
 export const pinioLogger = createPinoLogger({

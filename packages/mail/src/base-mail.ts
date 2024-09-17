@@ -1,8 +1,8 @@
 import type { JobFactory } from '@questpie/jobs/job-factory'
-import { logger } from '@questpie/shared/utils/logger'
 import { render } from '@react-email/render'
 import { convert } from 'html-to-text'
 import type { ReactElement } from 'react'
+import { appLogger } from '@questpie/shared/utils/logger'
 
 export type DefaultMailOptions = {
   from: string
@@ -73,7 +73,7 @@ export class MailClient {
 
   public registerWorker() {
     if (!this.job) {
-      logger.info('No job factory provided, mail will be sent synchronously')
+      appLogger.info('No job factory provided, mail will be sent synchronously')
       return
     }
 
