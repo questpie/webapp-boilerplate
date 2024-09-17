@@ -11,6 +11,7 @@ import {
   type JobsOptions,
   type QueueOptions,
   type RepeatableOptions,
+  type RepeatOptions,
   type WorkerListener,
   type WorkerOptions,
 } from 'bullmq'
@@ -26,7 +27,7 @@ export type BaseJobOptions<T extends TSchema = TAnySchema> = {
    * If repeat is specified, registeringWorker will also trigger the job to be repeated.
    * If there is a schema defined, defaultValues must be provided
    */
-  repeat?: RepeatableOptions & {
+  repeat?: RepeatOptions & {
     defaultValues?: Static<T>
   }
 
