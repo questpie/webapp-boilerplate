@@ -4,25 +4,29 @@
   "type": "module",
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "check-dependency-version-consistency": "^4.1.0",
+    "npm-check-updates": "^17.1.1",
+    "rimraf": "^6.0.1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "clean": "bun clean:nm && bun clean:lock && bun clean:artifacts",
-    "clean:artifacts": "bunx rimraf --glob ./**/dist ./**/build ./**/out ./**/.next",
-    "clean:lock": "bunx rimraf --glob ./**/bun.lockb",
-    "clean:nm": "bunx rimraf --glob ./**/node_modules",
+    "clean": "bun clean:artifacts && bun clean:lock && bun clean:nm",
+    "clean:artifacts": "bun rimraf --glob '\"{packages,apps}/**/dist\" \"{packages,apps}/**/build\" \"{packages,apps}/**/out\" \"{packages,apps}/**/.next\"'",
+    "clean:lock": "bun rimraf --glob './bun.lockb'",
+    "clean:nm": "bun rimraf --glob './**/node_modules'",
     "cli": "bun run ./scripts/cli.ts",
-    "deps:check": "bunx check-dependency-version-consistency .",
-    "deps:update": "bunx npm-check-updates -ui -ws",
+    "deps:check": "bun check-dependency-version-consistency .",
+    "deps:update": "bun npm-check-updates -ui -ws",
     "dev:api": "cd apps/api && bun run dev",
     "dev:app": "cd apps/app && bun run dev",
     "dev:worker": "cd apps/api && bun run dev:worker",
-    "fix": "bun @biomejs/biome check --apply-unsafe ./packages ./apps",
-    "format": "bun @biomejs/biome format --write ./packages ./apps",
-    "lint": "bun @biomejs/biome lint ./packages ./apps",
+    "fix": "bun biome check --apply-unsafe ./packages ./apps",
+    "format": "bun biome format --write ./packages ./apps",
+    "i18n": "cd packages/translations && bun i18n",
+    "lint": "bun biome lint ./packages ./apps",
     "postinstall": "bun deps:check",
     "types:check": "tsc --noEmit"
   },

@@ -1,4 +1,4 @@
-import en from './static/en.json'
+import en from './i18n/en/translations.json'
 
 export const allTranslations = {
   en,
