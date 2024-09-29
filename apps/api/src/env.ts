@@ -43,34 +43,13 @@ export const envApi = createEnv({
     GOOGLE_CLIENT_SECRET: Type.Optional(Type.String()),
     GOOGLE_ENABLED: StringBoolean({ default: false }),
 
-    GITHUB_CLIENT_ID: Type.Optional(Type.String()),
-    GITHUB_CLIENT_SECRET: Type.Optional(Type.String()),
-    GITHUB_ENABLED: StringBoolean({ default: false }),
+    // GITHUB_CLIENT_ID: Type.Optional(Type.String()),
+    // GITHUB_CLIENT_SECRET: Type.Optional(Type.String()),
+    // GITHUB_ENABLED: StringBoolean({ default: false }),
 
-    FACEBOOK_CLIENT_ID: Type.Optional(Type.String()),
-    FACEBOOK_CLIENT_SECRET: Type.Optional(Type.String()),
-    FACEBOOK_ENABLED: StringBoolean({ default: false }),
-
-    // Integrations
-    X_CLIENT_ID: Type.Optional(Type.String()),
-    X_CLIENT_SECRET: Type.Optional(Type.String()),
-    X_ENABLED: StringBoolean({ default: false }),
-
-    INSTAGRAM_CLIENT_ID: Type.Optional(Type.String()),
-    INSTAGRAM_CLIENT_SECRET: Type.Optional(Type.String()),
-    INSTAGRAM_ENABLED: StringBoolean({ default: false }),
-
-    YOUTUBE_CLIENT_ID: Type.Optional(Type.String()),
-    YOUTUBE_CLIENT_SECRET: Type.Optional(Type.String()),
-    YOUTUBE_ENABLED: StringBoolean({ default: false }),
-
-    TIKTOK_CLIENT_ID: Type.Optional(Type.String()),
-    TIKTOK_CLIENT_SECRET: Type.Optional(Type.String()),
-    TIKTOK_ENABLED: StringBoolean({ default: false }),
-
-    LINKEDIN_CLIENT_ID: Type.Optional(Type.String()),
-    LINKEDIN_CLIENT_SECRET: Type.Optional(Type.String()),
-    LINKEDIN_ENABLED: StringBoolean({ default: false }),
+    // FACEBOOK_CLIENT_ID: Type.Optional(Type.String()),
+    // FACEBOOK_CLIENT_SECRET: Type.Optional(Type.String()),
+    // FACEBOOK_ENABLED: StringBoolean({ default: false }),
 
     // Pusher/Soketi -> if no ws needed, remove this
     PUSHER_APP_ID: Type.String(),
@@ -113,33 +92,13 @@ export const envApi = createEnv({
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     GOOGLE_ENABLED: process.env.GOOGLE_ENABLED,
 
-    GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
-    GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
-    GITHUB_ENABLED: process.env.GITHUB_ENABLED,
+    // GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
+    // GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
+    // GITHUB_ENABLED: process.env.GITHUB_ENABLED,
 
-    FACEBOOK_CLIENT_ID: process.env.FACEBOOK_CLIENT_ID,
-    FACEBOOK_CLIENT_SECRET: process.env.FACEBOOK_CLIENT_SECRET,
-    FACEBOOK_ENABLED: process.env.FACEBOOK_ENABLED,
-
-    X_CLIENT_ID: process.env.X_CLIENT_ID,
-    X_CLIENT_SECRET: process.env.X_CLIENT_SECRET,
-    X_ENABLED: process.env.X_ENABLED,
-
-    INSTAGRAM_CLIENT_ID: process.env.INSTAGRAM_CLIENT_ID,
-    INSTAGRAM_CLIENT_SECRET: process.env.INSTAGRAM_CLIENT_SECRET,
-    INSTAGRAM_ENABLED: process.env.INSTAGRAM_ENABLED,
-
-    YOUTUBE_CLIENT_ID: process.env.YOUTUBE_CLIENT_ID,
-    YOUTUBE_CLIENT_SECRET: process.env.YOUTUBE_CLIENT_SECRET,
-    YOUTUBE_ENABLED: process.env.YOUTUBE_ENABLED,
-
-    TIKTOK_CLIENT_ID: process.env.TIKTOK_CLIENT_ID,
-    TIKTOK_CLIENT_SECRET: process.env.TIKTOK_CLIENT_SECRET,
-    TIKTOK_ENABLED: process.env.TIKTOK_ENABLED,
-
-    LINKEDIN_CLIENT_ID: process.env.LINKEDIN_CLIENT_ID,
-    LINKEDIN_CLIENT_SECRET: process.env.LINKEDIN_CLIENT_SECRET,
-    LINKEDIN_ENABLED: process.env.LINKEDIN_ENABLED,
+    // FACEBOOK_CLIENT_ID: process.env.FACEBOOK_CLIENT_ID,
+    // FACEBOOK_CLIENT_SECRET: process.env.FACEBOOK_CLIENT_SECRET,
+    // FACEBOOK_ENABLED: process.env.FACEBOOK_ENABLED,
 
     PUSHER_APP_ID: process.env.PUSHER_APP_ID,
     PUSHER_KEY: process.env.PUSHER_KEY,
