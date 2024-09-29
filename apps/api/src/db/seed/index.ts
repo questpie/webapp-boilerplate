@@ -5,8 +5,8 @@ import { createSeedRunner } from '@questpie/seed/index'
 
 export const seedRunner = createSeedRunner([testSeeder])
 
-export function runStartupSeeds() {
+export function runBootstrapSeeders() {
   const { db } = iocResolve(ioc.use(injectDatabase))
 
-  seedRunner.run(db, ['test-seeder'])
+  return seedRunner.run(db, ['test-seeder'])
 }

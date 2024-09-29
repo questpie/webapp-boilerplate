@@ -1,20 +1,26 @@
+import { runBootstrapSeeders } from '@questpie/api/db/seed'
 import { envApi } from '@questpie/api/env'
 import { bootApi } from '@questpie/api/server.entry'
 import { bootWorker } from '@questpie/api/worker.entry'
 
-await function run() {
+async function run() {
+  if (envApi.RUN_BOOTSTRAP_SEEDERS) {
+    await runBootstrapSeeders()
+  }
+
   switch (envApi.RUNTIME_MODE) {
     case 'all':
-      bootApi()
-      bootWorker()
+      await bootApi()
+      await bootWorker()
       break
     case 'api':
-      bootApi()
+      await bootApi()
       break
     case 'worker':
-      bootWorker()
+      await bootWorker()
       break
     default:
       throw new Error('Invalid runtime mode, pick one of "all", "api" or "worker"')
   }
 }
+run()

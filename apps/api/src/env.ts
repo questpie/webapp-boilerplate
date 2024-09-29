@@ -14,6 +14,8 @@ export const envApi = createEnv({
       default: 'all',
     }),
 
+    RUN_BOOTSTRAP_SEEDERS: StringBoolean({ default: false }),
+
     // database
     DATABASE_URL: Type.String(),
 
@@ -70,6 +72,8 @@ export const envApi = createEnv({
   runtimeEnv: {
     PORT: process.env.PORT,
     LOG_LEVEL: process.env.LOG_LEVEL,
+
+    RUN_BOOTSTRAP_SEEDERS: process.env.RUN_BOOTSTRAP_SEEDERS,
 
     RUNTIME_MODE: process.env.RUNTIME_MODE,
 
