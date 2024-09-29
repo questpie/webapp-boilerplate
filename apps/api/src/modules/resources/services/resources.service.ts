@@ -156,6 +156,8 @@ class ResourcesService {
     db: TransactionLike,
     opts: { organizationId: string; ids: string[] }
   ): Promise<string[]> {
+    if (!opts.ids.length) return []
+
     return db
       .update(resourcesTable)
       .set({
@@ -177,6 +179,7 @@ class ResourcesService {
     db: TransactionLike,
     opts: { organizationId: string; ids: string[]; cleanupAt?: string }
   ): Promise<string[]> {
+    if (!opts.ids.length) return []
     return db
       .update(resourcesTable)
       .set({
