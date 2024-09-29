@@ -28,6 +28,7 @@
     "@questpie/mail": "workspace:*",
     "@questpie/redis": "workspace:*",
     "@questpie/shared": "workspace:*",
+    "@questpie/seed": "workspace:*",
     "@react-email/render": "^1.0.1",
     "@sinclair/typebox": "0.32.34",
     "arctic": "^1.9.2",

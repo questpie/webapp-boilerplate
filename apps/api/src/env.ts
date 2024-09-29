@@ -10,6 +10,10 @@ export const envApi = createEnv({
       Type.String({ default: generalEnv.PUBLIC_NODE_ENV === 'development' ? 'debug' : 'info' })
     ),
 
+    RUNTIME_MODE: Type.Union([Type.Literal('worker'), Type.Literal('api'), Type.Literal('all')], {
+      default: 'all',
+    }),
+
     // database
     DATABASE_URL: Type.String(),
 
@@ -87,6 +91,8 @@ export const envApi = createEnv({
   runtimeEnv: {
     PORT: process.env.PORT,
     LOG_LEVEL: process.env.LOG_LEVEL,
+
+    RUNTIME_MODE: process.env.RUNTIME_MODE,
 
     DATABASE_URL: process.env.DATABASE_URL,
 

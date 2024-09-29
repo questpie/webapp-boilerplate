@@ -1,6 +1,6 @@
 import { authRoutes } from '@questpie/api/modules/auth/auth.routes'
 import { chatRoutes } from '@questpie/api/modules/chat/chat.routes'
-import { userRoutes } from '@questpie/api/modules/user/user.routes'
+import { organizationRoutes } from '@questpie/api/modules/organizations/organizations.routes'
 import { Elysia } from 'elysia'
 
 /**
@@ -9,5 +9,5 @@ import { Elysia } from 'elysia'
 export const rootRoutes = new Elysia()
   .use(authRoutes)
   .use(chatRoutes)
-  .use(userRoutes)
+  .use(organizationRoutes)
   .get('/healthy', () => 'ok', { detail: { description: 'Health check' } })
