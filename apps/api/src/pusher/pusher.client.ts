@@ -1,11 +1,11 @@
+import { envApi } from '@questpie/api/env'
 import Pusher from 'pusher'
-import { env } from '../env'
 
 export const pusher = new Pusher({
-  appId: env.PUSHER_APP_ID,
-  key: env.PUSHER_KEY,
-  secret: env.PUSHER_SECRET,
-  host: env.PUSHER_HOST,
-  port: String(env.PUSHER_PORT),
-  useTLS: env.PUSHER_USE_TLS,
+  appId: envApi.PUSHER_APP_ID,
+  key: envApi.PUSHER_KEY,
+  secret: envApi.PUSHER_SECRET,
+  host: envApi.PUSHER_HOST,
+  port: String(envApi.PUSHER_PORT),
+  useTLS: envApi.PUSHER_USE_TLS,
 })
