@@ -43,7 +43,7 @@ export const envApi = createEnv({
     // OAuth providers
     GOOGLE_CLIENT_ID: Type.Optional(Type.String()),
     GOOGLE_CLIENT_SECRET: Type.Optional(Type.String()),
-    GOOGLE_ENABLED: StringBoolean({ default: false }),
+    GOOGLE_ENABLED: StringBoolean({ default: 'false' }),
 
     // GITHUB_CLIENT_ID: Type.Optional(Type.String()),
     // GITHUB_CLIENT_SECRET: Type.Optional(Type.String()),
