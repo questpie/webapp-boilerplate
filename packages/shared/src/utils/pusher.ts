@@ -10,7 +10,7 @@ type Params<T extends string> = { [K in ExtractParams<T>]: string }
  * @param {Params<T>} params - An object containing values for the placeholders.
  * @returns {string} The generated channel name with placeholders replaced by actual values.
  */
-export function getChannelName<T extends string>(template: T, params: Params<T>): string {
+export function formatChannelName<T extends string>(template: T, params: Params<T>): string {
   return template.replace(/\{\{(\w+)\}\}/g, (_, key) => params[key as keyof Params<T>])
 }
 
@@ -37,4 +37,35 @@ export function parseChannelName<T extends string>(
 export function doesMatchChannel(template: string, channelName: string): boolean {
   const regex = new RegExp(`^${template.replace(/\{\{(\w+)\}\}/g, '(?<$1>[^-]+)')}$`)
   return channelName.match(regex) !== null
+}
+
+export function createChannel<T extends string>(template: T) {
+  return {
+    /**
+     * Checks if a given channel name matches the template.
+     * @param {string} channelName - The actual channel name to check against the template.
+     * @returns {boolean} True if the channel name matches the template, false otherwise.
+     */
+    match: (channelName: string): boolean => {
+      return doesMatchChannel(template, channelName)
+    },
+
+    /**
+     * Parses a channel name to extract parameters based on the template.
+     * @param {string} channelName - The actual channel name to parse.
+     * @returns {Params<T> | null} An object with extracted parameters, or null if the channel name doesn't match the template.
+     */
+    parse: (channelName: string): Params<T> | null => {
+      return parseChannelName(template, channelName)
+    },
+
+    /**
+     * Generates a channel name by replacing placeholders in the template with provided parameters.
+     * @param {Params<T>} params - An object containing values for the placeholders.
+     * @returns {string} The generated channel name with placeholders replaced by actual values.
+     */
+    format: (params: Params<T>): string => {
+      return formatChannelName(template, params)
+    },
+  }
 }
