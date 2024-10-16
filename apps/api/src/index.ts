@@ -4,6 +4,7 @@ import { pinioLogger } from '@questpie/api/common/logger'
 import { Elysia } from 'elysia'
 import { ip } from 'elysia-ip'
 import { rootRoutes } from './root.routes'
+import { httpError } from '@questpie/api/common/http-error-handler'
 
 /**
  * Here you can either listen inside server.entry.ts or import to next.js and serve the api from next.js
@@ -11,6 +12,7 @@ import { rootRoutes } from './root.routes'
 export const api = new Elysia()
   .use(ip())
   // .use(applyRateLimit())
+  .use(httpError())
   .use(
     pinioLogger.into({
       customProps(ctx) {
